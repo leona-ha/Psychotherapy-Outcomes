@@ -1,0 +1,8 @@
+coach_dicts.py
+.ipynb_checkpoints
+.DS_Store
+Dictionary_Affective_norms.txt
+*.pkl
+*.csv
+*.png
+*.txt
