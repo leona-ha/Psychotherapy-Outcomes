@@ -1,9 +1,12 @@
 from sklearn.linear_model import LogisticRegression
+import numpy as np
 
 def run(ml_options, X_train,X_test, y_train,y_test):
 
-    X_train = X_train["outcome_sum_pre"]
-    X_test = X_test["outcome_sum_pre"]
+    X_train = X_train[["outcome_sum_pre"]]
+    X_test = X_test[["outcome_sum_pre"]]
+
+
 
     log_model = LogisticRegression(C=1.0)
     log_model.fit(X_train, y_train)   
@@ -42,5 +45,5 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     precision = counter_class1_correct / (counter_class1_correct + counter_class0_incorrect)
     f1_score = 2 * ((accuracy_class1 * precision)/(accuracy_class1+precision))
     #log_loss_value = log_loss(y_test, clf.predict_proba(X_test), normalize=True)
-
-    return [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy]
+    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy]
+    return outcome_list

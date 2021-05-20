@@ -23,7 +23,7 @@ import math
 from scipy import stats
 
 from preprocessor import main_preprocessing, aggregation_transformation, dataset_split, scaling, onehot
-from postprocessor import safe_results
+from postprocessor import safe_results, compare_models
 from model import RF, NN, SVM
 
 # Model preparation and selection
@@ -44,9 +44,12 @@ import config
 from config import ml_options
 from config import STANDARDPATH, DATAPATH_IN, DATAPATH_OUT
 
-if ml_options["model"] == "RF":
+model = ml_options["model_architecture"]
+baseline = ml_options["baseline_model"]
+
+if model == "RF":
     ml_options = config.rf_config(ml_options)
-elif ml_options["model"] == "NN":
+elif model == "NN":
     ml_options = config.nn_config(ml_options)
 
 def reminder():
@@ -60,6 +63,8 @@ if __name__ == '__main__':
     runslist = [i for i in range(ml_options["n_iterations"])]
     
     outcome_list = []
+    baseline_list = []
+    
     for numrun in runslist:
         features = onehot.prepare_data(ml_options)
         X_train, X_test, y_train, y_test = dataset_split.prepare_data(ml_options, numrun, features)
@@ -67,21 +72,23 @@ if __name__ == '__main__':
         X_train, X_test, y_train, y_test = aggregation_transformation.prepare_data(ml_options,X_train, X_test, y_train, y_test)
         X_train, X_test, y_train, y_test = scaling.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
 
-        clf = import_module(f"{ml_options["model_architecture"]}")
+        clf_mod = import_module(f"model.{model}")
 
-        clf = clf.build_model(ml_options, X_train, X_test, y_train, y_test)
-        clf = clf.fit_model(X_train, y_train, clf)
-        outcome_results = clf.predict(X_test, y_test, clf, ml_options)
+        clf = clf_mod.build_model(ml_options, X_train, X_test, y_train, y_test)
+        clf = clf_mod.fit_model(X_train, y_train, clf)
+        outcome_results = clf_mod.predict(X_test, y_test, clf, ml_options)
         
         outcome_list.append(outcome_results)
-    safe_results.aggregate_metrics(ml_options, outcome_list, X_train)
 
+        if ml_options["baseline"] == 1:
+            base = import_module(f"model.{baseline}")
+            outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
+            baseline_list.append(outcome_baseline)
+
+    model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train)
     if ml_options["baseline"] == 1:
-        base = import_module(f"{ml_options["baseline_model"]}")
-        outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
+        compare_models.run(ml_options, baseline_list, X_train, X_test, model_flatlists)
         
-
-
     if ml_options["save_config_option"] == 1:
         savepath = os.path.join(STANDARDPATH, f'{ml_options["model_architecture"]}_configurations.csv')
         

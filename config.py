@@ -52,7 +52,9 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
                'PRE_pvq6','PRE_pvq7','PRE_pvq8','PRE_pvq9','PRE_pvq10','PRE_pvq11','PRE_pvq12','PRE_pvq13','PRE_pvq14',
                'PRE_pvq15','PRE_pvq16','PRE_pvq17','PRE_pvq18','PRE_pvq19','PRE_pvq20','PRE_pvq21', 'PRE_imet1','PRE_imet2','PRE_imet3','PRE_imet4','PRE_imet5','PRE_imet6','PRE_imet7',
                 'PRE_imet8','PRE_imet9','PRE_imet10', 'M1_phqD1','M1_phqD2','M1_phqD3','M1_phqD4','M1_phqD5','M1_phqD6',
-               'M1_phqD7','M1_phqD8','M1_phqD9']
+               'M1_phqD7','M1_phqD8','M1_phqD9', 'M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
+               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
+               'M4_phqD7','M4_phqD8','M4_phqD9']
 
 
 ml_options["target_columns_post"] =  ['POST_phqD1','POST_phqD2','POST_phqD3','POST_phqD4','POST_phqD5','POST_phqD6','POST_phqD7','POST_phqD8','POST_phqD9']
@@ -62,7 +64,7 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_change"
 
-ml_options["include_early_change"] = 0
+ml_options["include_early_change"] = 4 # or module 1,3,4
 
 ml_options['test_size_option'] = 0.2
 
@@ -72,8 +74,6 @@ if ml_options['sampling'] == 0:
     ml_options['rf_classes_class_weight'] = dict({1:2, 0:3})
 
 ml_options['stratify_option'] = 1
-
-ml_options['dummy_encoding'] = 0
 
 ml_options['nlp_features'] = 0
 if ml_options['nlp_features'] == 1:
@@ -89,14 +89,15 @@ ml_options["metrics"] = "classification_metrics"
 
 "Data preprocessing"
 
-ml_options["preprocessor"] = "default"
 ml_options['data_scaling_option'] = 1
 
 ml_options['scaling_columns'] = ["bmi_score", "age", "PRE_internet"]
 
 ml_options['missing_values_option'] = 0
 
-ml_options['missing_outcome_option'] = 1                          
+ml_options['missing_outcome_option'] = 1    
+
+ml_options['dummy_encoding'] = 1
 
 "Model Tuning"
 
