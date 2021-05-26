@@ -85,7 +85,7 @@ if __name__ == '__main__':
             outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
             baseline_list.append(outcome_baseline)
 
-    model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train)
+    model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train, X_test)
     if ml_options["baseline"] == 1:
         compare_models.run(ml_options, baseline_list, X_train, X_test, model_flatlists)
         

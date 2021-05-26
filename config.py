@@ -64,11 +64,11 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_change"
 
-ml_options["include_early_change"] = 4 # or module 1,3,4
+ml_options["include_early_change"] = 3 # or module 1,3,4
 
 ml_options['test_size_option'] = 0.2
 
-ml_options['sampling'] = 1
+ml_options['sampling'] = 3
 
 if ml_options['sampling'] == 0:
     ml_options['rf_classes_class_weight'] = dict({1:2, 0:3})
@@ -101,12 +101,12 @@ ml_options['dummy_encoding'] = 1
 
 "Model Tuning"
 
-ml_options['feature_selection_option'] = 0 
+ml_options['feature_selection_option'] = 5 
 
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
     ml_options['step_reduction_recursive'] = int(input("Choose n of features to remove per step (default is 3):"))
-    ml_options['scoring_recursive'] = 'balanced_accuracy'
+    ml_options['scoring_recursive'] = 'f1'
 
 if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'

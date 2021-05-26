@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 """
 "Safe aggregated metrics 
 """
-def aggregate_metrics(ml_options, input_list, X_train=None):
+def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
     
     accuracy_flat = []
     accuracy_class1_flat = []
@@ -123,7 +123,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None):
                     oob_accuracy_max, oob_accuracy_mean, oob_accuracy_std, log_loss_value_min, log_loss_value_max, log_loss_value_mean, log_loss_value_std, \
                     feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
         
-        print('Number of Rounds: ' + str(number_rounds) + 
+        print('Number of Rounds: ' + str(number_rounds)  + 'Length X_train: ' + str(len(X_train)) + 'Length X_test' + str(len(X_test)) + 
                 '\nMin Accuracy: ' + str(accuracy_min) + '\nMax Accuracy: ' + str(accuracy_max) + '\nMean Accuracy: ' + str(accuracy_mean) + '\nStd Accuracy: ' + str(accuracy_std) +
                 '\nMin Accuracy_class_0: ' + str(accuracy_class0_min) + '\nMax Accuracy_class_0: ' + str(accuracy_class0_max) + '\nMean Accuracy_class_0: ' + str(accuracy_class0_mean) + '\nStd Accuracy_class_0: ' + str(accuracy_class0_std) +
                 '\nMin Accuracy_class_1: ' + str(accuracy_class1_min) + '\nMax Accuracy_class_1: ' + str(accuracy_class1_max) + '\nMean Accuracy_class_1: ' + str(accuracy_class1_mean) + '\nStd Accuracy_class_1: ' + str(accuracy_class1_std) +
@@ -133,6 +133,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None):
                 '\nMean Precision:' + str(precision_mean)+ '\nMean F1:' + str(f1_score_mean))
 
         feature_plot = input("Would you like to plot feature importances? (y/n):")
+
         if feature_plot == "y":
             importances = feature_importances_mean.reshape((feature_importances_mean.shape[1],))
             indices = np.argsort(importances)[::-1]
@@ -273,7 +274,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None):
                     f1_score_min, f1_score_max, f1_score_mean, f1_score_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, 
                     balanced_accuracy_std,log_loss_value_min, log_loss_value_max, log_loss_value_mean, log_loss_value_std])
         
-        print('Number of Rounds: ' + str(number_rounds) + '\nMin Accuracy: ' + str(accuracy_min) + '\nMax Accuracy: ' + str(accuracy_max) + '\nMean Accuracy: ' + str(accuracy_mean) + '\nStd Accuracy: ' + str(accuracy_std) +
+        print('Number of Rounds: ' + str(number_rounds) + 'Length X_train: ' + str(len(X_train)) + 'Length X_test: ' + str(len(X_test)) + '\nMin Accuracy: ' + str(accuracy_min) + '\nMax Accuracy: ' + str(accuracy_max) + '\nMean Accuracy: ' + str(accuracy_mean) + '\nStd Accuracy: ' + str(accuracy_std) +
                 '\nMin Accuracy_class_0: ' + str(accuracy_class0_min) + '\nMax Accuracy_class_0: ' + str(accuracy_class0_max) + '\nMean Accuracy_class_0: ' + str(accuracy_class0_mean) + '\nStd Accuracy_class_0: ' + str(accuracy_class0_std) +
                 '\nMin Accuracy_class_1: ' + str(accuracy_class1_min) + '\nMax Accuracy_class_1: ' + str(accuracy_class1_max) + '\nMean Accuracy_class_1: ' + str(accuracy_class1_mean) + '\nStd Accuracy_class_1: ' + str(accuracy_class1_std) +
                 '\nMin Balanced_Accuracy: ' + str(balanced_accuracy_min) + '\nMax Balanced_Accuracy: ' + str(balanced_accuracy_max) + '\nMean Balanced_Accuracy: ' + str(balanced_accuracy_mean) + '\nStd Balanced_Accuracy: ' + str(balanced_accuracy_std) +

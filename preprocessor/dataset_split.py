@@ -23,7 +23,7 @@ def prepare_data(ml_options, numrun, features=None):
         features = features[ml_options["feature_columns"]]
     
     if ml_options['missing_outcome_option'] == 1:
-        print("The number of dropped rows is: ", len(features[features[target_columns_post].isnull().all(axis=1)]))
+        print("The number of dropped rows is:", len(features[features[target_columns_post].isnull().all(axis=1)]))
         features = features[features[target_columns_post].notnull().all(axis=1)]
             
     """
@@ -111,5 +111,5 @@ def prepare_data(ml_options, numrun, features=None):
         X_test.to_csv(full_path_X_test, sep=";", encoding="utf-8", header=True)
         X_train.to_csv(full_path_X_train, sep=";", encoding="utf-8", header=True)
 
-
+    print("Nr of records in X_train and y_train is:",len(X_train), len(X_test))
     return X_train, X_test, y_train, y_test

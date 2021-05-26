@@ -94,7 +94,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
         standard_parameter = {'n_estimators': 1000,
                        'criterion': 'gini',
                        'max_features': 'auto',
-                       'max_depth': 8,
+                       'max_depth': 10,
                        'min_samples_split': 2,
                        'min_samples_leaf': 1,
                        'bootstrap': True}
@@ -190,7 +190,6 @@ def predict(X_test, y_test, clf, ml_options):
             else:
                 counter_class0_incorrect += 1
                 
-    print(counter_class1_correct, counter_class0_correct, counter_class1_incorrect,counter_class0_incorrect)
 
     """ Calculate accuracy scores """
 
@@ -232,6 +231,8 @@ def predict(X_test, y_test, clf, ml_options):
                 counter_features_selected += 1
             else:
                 feature_importances[number_features] = 0
+        print("Optimal number of features : %d" % rfe.n_features_)
+
 
     elif ml_options['feature_selection_option'] == 5:
         sfmpath = os.path.join(MODEL_PATH, 'sfm.pkl')
@@ -244,6 +245,7 @@ def predict(X_test, y_test, clf, ml_options):
                 counter_features_selected += 1
             else:
                 feature_importances[number_features] = 0
+        print("Nr of selected features:", counter_features_selected)
     
     fpr, tpr, __ = roc_curve(y_test, clf.predict_proba(X_test)[:,1])
     mean_fpr = np.linspace(0, 1, 100)
