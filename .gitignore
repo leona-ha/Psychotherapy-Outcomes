@@ -6,6 +6,5 @@ Dictionary_Affective_norms.txt
 *.pkl
 *.csv
 *.png
-*.txt
 rf_leona_short.py
 prepare_run_eval.py
