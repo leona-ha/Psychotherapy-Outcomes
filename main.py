@@ -15,6 +15,7 @@ import csv
 from pathlib import Path
 import json
 from importlib import import_module
+from tqdm import tqdm
 
 # Data handling and plotting
 import numpy as np
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     outcome_list = []
     baseline_list = []
     
-    for numrun in runslist:
+    for numrun in tqdm(runslist, total=ml_options["n_iterations"]):
         features = onehot.prepare_data(ml_options)
         X_train, X_test, y_train, y_test = dataset_split.prepare_data(ml_options, numrun, features)
         X_train, X_test, y_train, y_test = main_preprocessing.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)

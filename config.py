@@ -13,6 +13,8 @@ DATAPATH_INTERIM = os.path.join(STANDARDPATH, "data", "interim")
 MODEL_PATH = os.path.join(STANDARDPATH,"model")
 OUTCOME_PATH = os.path.join(STANDARDPATH,"outcomes")
 
+if not os.path.exists(OUTCOME_PATH):
+    os.makedirs(OUTCOME_PATH)
 
 """ Create dictionary with parameters and options """
 
@@ -113,7 +115,7 @@ if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 1
+ml_options['hyperparameter_tuning_option'] = 0
 
 ml_options['n_iter_hyper_randsearch'] = 10 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting

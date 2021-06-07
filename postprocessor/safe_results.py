@@ -4,13 +4,17 @@ import numpy as np
 from config import STANDARDPATH, OUTCOME_PATH
 import matplotlib.pyplot as plt
 
+IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
+if not os.path.exists(IMG_SAFEPATH):
+    os.makedirs(IMG_SAFEPATH)
+
 """
 "Safe aggregated metrics 
 """
 def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
 
     savepath = os.path.join(OUTCOME_PATH, f'outcomes_aggregated_{ml_options["model_architecture"]}.csv')
-    
+
     accuracy_flat = []
     accuracy_class1_flat = []
     accuracy_class0_flat = []
@@ -165,8 +169,8 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
             plt.title("Feature Importance")
             plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
             plt.xticks(range(20), names, rotation=90)
-            IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
-            plt.savefig(IMG_SAFEPATH + f'{ml_options["model_name"]}_feature_importances.png')
+            img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importances.png')
+            plt.savefig(img_safepath)
 
 ### Add input list!!
 
