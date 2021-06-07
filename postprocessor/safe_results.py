@@ -1,13 +1,15 @@
 import csv
 import os
 import numpy as np
-from config import STANDARDPATH
+from config import STANDARDPATH, OUTCOME_PATH
 import matplotlib.pyplot as plt
 
 """
 "Safe aggregated metrics 
 """
 def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
+
+    savepath = os.path.join(OUTCOME_PATH, f'outcomes_aggregated_{ml_options["model_architecture"]}.csv')
     
     accuracy_flat = []
     accuracy_class1_flat = []
@@ -105,7 +107,6 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         counter_features_selected_mean = np.mean(counter_features_selected_flat)
         counter_features_selected_std = np.std(counter_features_selected_flat)
         
-        savepath = os.path.join(STANDARDPATH, 'outcomes_aggregated_rf.csv')
         number_rounds = len(accuracy_flat)
         if not os.path.exists(savepath):
             header = ['model', 'n_iterations', 'counter_features_selected_mean', 'counter_features_selected_std','counter_features_selected_min','counter_features_selected_max', \
@@ -120,6 +121,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
             
             with open(savepath, 'a', encoding='UTF8', newline='') as f:
                 writer = csv.writer(f)
+                writer.writerow(header)
                 writer.writerow([ml_options["model_name"],number_rounds, 
                 counter_features_selected_mean, counter_features_selected_std,counter_features_selected_min,counter_features_selected_max, \
                 accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
@@ -163,7 +165,8 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
             plt.title("Feature Importance")
             plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
             plt.xticks(range(20), names, rotation=90)
-            plt.savefig(f'{ml_options["model_name"]}_feature_importances.png')
+            IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
+            plt.savefig(IMG_SAFEPATH + f'{ml_options["model_name"]}_feature_importances.png')
 
 ### Add input list!!
 
@@ -191,7 +194,6 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
     
         number_rounds = len(accuracy_flat)
 
-        savepath = os.path.join(STANDARDPATH, 'outcomes_aggregated_svm.csv')
         if not os.path.exists(savepath):
             header = ['model', 'n_iterations', 'accuracy_min', 'accuracy_max', 'accuracy_mean', 'accuracy_std', 'accuracy_class0_min', \
                 'accuracy_class0_max', 'accuracy_class0_mean', 'accuracy_class0_std', 'accuracy_class1_min','accuracy_class1_max', \
@@ -199,12 +201,22 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                 'balanced_accuracy_std', 'feature_importances_min', 'feature_importances_max', 'feature_importances_mean', 'feature_importances_std']
 
 
-        with open(savepath, 'a', encoding='UTF8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
-            accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
+            with open(savepath, 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(header)
+                writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
+                accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
                     accuracy_class1_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, balanced_accuracy_std,  \
                     feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
+        
+        else:  
+            with open(savepath, 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
+                accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
+                    accuracy_class1_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, balanced_accuracy_std,  \
+                    feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
+
         
         print('Number of Rounds: ' + str(number_rounds) + 
                 '\nMin Accuracy: ' + str(accuracy_min) + '\nMax Accuracy: ' + str(accuracy_max) + '\nMean Accuracy: ' + str(accuracy_mean) + '\nStd Accuracy: ' + str(accuracy_std) +
@@ -276,7 +288,6 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                   
         number_rounds = len(accuracy_flat)
 
-        savepath = os.path.join(STANDARDPATH, 'outcomes_aggregated_nn.csv')
         if not os.path.exists(savepath):
             header = ['model', 'n_iterations', 'accuracy_min', 'accuracy_max', 'accuracy_mean', 'accuracy_std', 'accuracy_class0_min', \
                 'accuracy_class0_max', 'accuracy_class0_mean', 'accuracy_class0_std', 'accuracy_class1_min','accuracy_class1_max', \
@@ -288,6 +299,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
+            writer.writerow(header)
             writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
                 accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
                     accuracy_class1_std, precision_min, precision_max,precision_mean, precision_std, \

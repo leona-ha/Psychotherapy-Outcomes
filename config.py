@@ -11,6 +11,7 @@ DATAPATH_IN = os.environ.get("DATA_PATH") + "prepared_data.csv"
 DATAPATH_OUT = os.path.join(STANDARDPATH, "data", "processed")
 DATAPATH_INTERIM = os.path.join(STANDARDPATH, "data", "interim")
 MODEL_PATH = os.path.join(STANDARDPATH,"model")
+OUTCOME_PATH = os.path.join(STANDARDPATH,"outcomes")
 
 
 """ Create dictionary with parameters and options """
