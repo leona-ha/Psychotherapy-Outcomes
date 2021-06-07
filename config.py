@@ -64,7 +64,7 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_change"
 
-ml_options["include_early_change"] = 3 # or module 1,3,4
+ml_options["include_early_change"] = 0 # or module 1,3,4
 
 ml_options['test_size_option'] = 0.2
 
@@ -73,7 +73,7 @@ ml_options['sampling'] = 3
 if ml_options['sampling'] == 0:
     ml_options['rf_classes_class_weight'] = dict({1:2, 0:3})
 
-ml_options['stratify_option'] = 1
+ml_options['stratify_option'] = 0
 
 ml_options['nlp_features'] = 0
 if ml_options['nlp_features'] == 1:
@@ -106,15 +106,15 @@ ml_options['feature_selection_option'] = 5
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
     ml_options['step_reduction_recursive'] = int(input("Choose n of features to remove per step (default is 3):"))
-    ml_options['scoring_recursive'] = 'f1'
+    ml_options['scoring_recursive'] = 'recall'
 
 if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 0
+ml_options['hyperparameter_tuning_option'] = 1
 
-ml_options['n_iter_hyper_randsearch'] = 100 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
+ml_options['n_iter_hyper_randsearch'] = 10 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting
 
 "Postprocessing"
@@ -136,12 +136,12 @@ ml_options['baseline_model'] = 'logreg'
 
 def rf_config(options_dict):
     options_dict['data_scaling_option'] = 1
-    options_dict['hyperparameter_dict'] = {'n_estimators': [500, 2000, 10000],
-                                    'criterion': ['gini', 'entropy'],
+    options_dict['hyperparameter_dict'] = {'n_estimators': [500, 2000], #[500, 2000, 10000]
+                                    'criterion': ['gini'], #['gini', 'entropy']
                                     'max_features': ['sqrt', 'log2'],
-                                    'max_depth': [4, 5, 6, 7, 8, 9],
-                                    'min_samples_split': [2,4,6,8,10],
-                                    'min_samples_leaf': [1, 2, 3, 4, 5],
+                                    'max_depth': [7, 8, 9],
+                                    'min_samples_split': [2,4,6], #[2,4,6,8,10]
+                                    'min_samples_leaf': [1, 2, 3], #[1, 2, 3, 4, 5]
                                     'bootstrap': [True]} # [True, False] verfügbar, aber OOB-Estimate nur für True verfügbar
     
     return options_dict

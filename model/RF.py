@@ -17,7 +17,6 @@ from sklearn.feature_selection import RFE, RFECV, SelectFromModel
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import log_loss, roc_curve, auc
 from sklearn.calibration import calibration_curve
-from sklearn.decomposition import PCA, FastICA
 from sklearn.inspection import permutation_importance
 
 from imblearn.ensemble import BalancedRandomForestClassifier
@@ -94,7 +93,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
         standard_parameter = {'n_estimators': 1000,
                        'criterion': 'gini',
                        'max_features': 'auto',
-                       'max_depth': 10,
+                       'max_depth': 9,
                        'min_samples_split': 2,
                        'min_samples_leaf': 1,
                        'bootstrap': True}
@@ -206,6 +205,7 @@ def predict(X_test, y_test, clf, ml_options):
 
     if ml_options['feature_selection_option'] == 0:
         feature_importances = clf.feature_importances_
+        counter_features_selected = X_train.shape[1]
         
 
     elif ml_options['feature_selection_option'] == 1:
@@ -245,7 +245,7 @@ def predict(X_test, y_test, clf, ml_options):
                 counter_features_selected += 1
             else:
                 feature_importances[number_features] = 0
-        print("Nr of selected features:", counter_features_selected)
+    print("Nr of selected features:", counter_features_selected)
     
     fpr, tpr, __ = roc_curve(y_test, clf.predict_proba(X_test)[:,1])
     mean_fpr = np.linspace(0, 1, 100)
@@ -253,24 +253,24 @@ def predict(X_test, y_test, clf, ml_options):
     roc_auc = auc(fpr, tpr)
     fraction_positives, mean_predicted_value = calibration_curve(y_test, clf.predict_proba(X_test)[:,1], n_bins=10)
     
-    print('Round Number: ', str(ml_options["seed"]), '\nAccuracy: ', str(accuracy), '\nAccuracy_class0: ', str(accuracy_class1), '\nAccuracy_class1/Recall: ', 
+    print('Round Number: ', str(ml_options["seed"]), '\nSelected Features: ', str(counter_features_selected),'\nAccuracy: ', str(accuracy), '\nAccuracy_class0: ', str(accuracy_class1), '\nAccuracy_class1/Recall: ', 
         str(accuracy_class0), '\nPrecision: ', str(precision), '\nF1_Score: ', str(f1_score), '\nOOB Accuracy ', str(oob_accuracy), '\nLog Loss value: ', str(log_loss_value))
 
     savepath = os.path.join(STANDARDPATH, 'outcomes_rf.csv')
     if not os.path.exists(savepath):
-        header = ['model', 'seed/run', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'oob_accuracy', 'log_loss_value', 'roc_auc']
+        header = ['model', 'seed/run', 'n_features_selected', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'oob_accuracy', 'log_loss_value', 'roc_auc']
         with open(savepath, 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             # write the header
             writer.writerow(header)
             # write outcome rows
-            writer.writerow([ml_options["model_name"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, oob_accuracy, log_loss_value, roc_auc])
+            writer.writerow([ml_options["model_name"],ml_options["seed"], counter_features_selected, accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, oob_accuracy, log_loss_value, roc_auc])
     else:
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([ml_options["model_name"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, oob_accuracy, log_loss_value, roc_auc])
 
-    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy,oob_accuracy, log_loss_value, feature_importances, fpr, tpr, tprs, roc_auc, fraction_positives, mean_predicted_value]
+    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy,oob_accuracy, log_loss_value, feature_importances, fpr, tpr, tprs, roc_auc, fraction_positives, mean_predicted_value, counter_features_selected]
     return outcome_list
     
 

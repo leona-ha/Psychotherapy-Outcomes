@@ -26,19 +26,11 @@ def prepare_data(numrun, ml_options, X_train, X_test, y_train, y_test):
         X_test_scaled = copy.deepcopy(X_test)
 
         for feature in features: 
-            scalerpath = os.path.join(MODEL_PATH, f'std_scaler_{feature}_{ml_options["model_name"]}.pkl')
-            if not os.path.isdir(scalerpath):
-                print(f'Fit new scaler to feature {feature}')
-                scaler = StandardScaler()
-                scaler = scaler.fit(X_train[[feature]])
-                X_train_scaled[feature] = scaler.transform(X_train_scaled[[feature]])
-                X_test_scaled[feature] = scaler.transform(X_test_scaled[[feature]])
-                pickle.dump(scaler, open(scalerpath, 'wb'))
-            else:
-                print(f'Load existing scaler fot feature {feature}')
-                scaler = pickle.load(open(scalerpath, 'rb'))
-                X_train_scaled[feature] = scaler.transform(X_train_scaled[[feature]])
-                X_test_scaled[feature] = scaler.transform(X_test_scaled[[feature]])
+            scaler = StandardScaler()
+            scaler = scaler.fit(X_train[[feature]])
+            X_train_scaled[feature] = scaler.transform(X_train_scaled[[feature]])
+            X_test_scaled[feature] = scaler.transform(X_test_scaled[[feature]])
+                
     else: 
         X_train_scaled = copy.deepcopy(X_train)
         X_test_scaled = copy.deepcopy(X_test)

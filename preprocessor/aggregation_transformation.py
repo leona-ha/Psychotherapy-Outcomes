@@ -9,14 +9,11 @@ import csv
 import copy
 
 def prepare_data(ml_options, X_train, X_test, y_train, y_test):
-    #data = pd.read_csv(DATAPATH_IN, sep=";", low_memory=False)
-    #data = data[ml_options["feature_columns"]]
 
     dflist = [X_train, X_test]
 
     for data in dflist:
         
-
             """
             "Aggregate and transform questionnaire features
             """

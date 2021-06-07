@@ -23,6 +23,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
     roc_auc_flat = []
     fraction_positives_flat = []
     mean_predicted_value_flat = []
+    counter_features_selected_flat = []
 
     if ml_options["model_architecture"] == "RF": 
         feature_importances_flat = np.zeros((len(input_list),len(input_list[0][8])))
@@ -60,8 +61,8 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                     fraction_positives_flat.append(sublist[itemnumber])
                 elif itemnumber == 14:
                     mean_predicted_value_flat.append(sublist[itemnumber])
-                #elif itemnumber == 13:
-                    #pvalue_flat.append(sublist[itemnumber])
+                elif itemnumber == 15:
+                    counter_features_selected_flat.append(sublist[itemnumber])
 
         accuracy_min = min(accuracy_flat)
         accuracy_max = max(accuracy_flat)
@@ -99,11 +100,16 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         feature_importances_max = feature_importances_flat.max(axis=0).reshape(1,len(input_list[0][8]))
         feature_importances_mean = feature_importances_flat.mean(axis=0).reshape(1,len(input_list[0][8]))
         feature_importances_std = feature_importances_flat.std(axis=0).reshape(1,len(input_list[0][8]))
+        counter_features_selected_min = min(counter_features_selected_flat)
+        counter_features_selected_max = max(counter_features_selected_flat)
+        counter_features_selected_mean = np.mean(counter_features_selected_flat)
+        counter_features_selected_std = np.std(counter_features_selected_flat)
         
         savepath = os.path.join(STANDARDPATH, 'outcomes_aggregated_rf.csv')
         number_rounds = len(accuracy_flat)
         if not os.path.exists(savepath):
-            header = ['model', 'n_iterations', 'accuracy_min', 'accuracy_max', 'accuracy_mean', 'accuracy_std', 'accuracy_class0_min', \
+            header = ['model', 'n_iterations', 'counter_features_selected_mean', 'counter_features_selected_std','counter_features_selected_min','counter_features_selected_max', \
+            'accuracy_min', 'accuracy_max', 'accuracy_mean', 'accuracy_std', 'accuracy_class0_min', \
                 'accuracy_class0_max', 'accuracy_class0_mean', 'accuracy_class0_std', 'accuracy_class1_min','accuracy_class1_max', \
                 'accuracy_class1_mean', 'accuracy_class1_std', 'precision_min', 'precision_max', 'precision_mean', 'precision_std', \
                     'f1_score_min', 'f1_score_max', 'f1_score_mean', 'f1_score_std', \
@@ -111,11 +117,25 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                 'balanced_accuracy_std', 'oob_accuracy_min', 'oob_accuracy_max', 'oob_accuracy_mean', 'oob_accuracy_std', \
                 'log_loss_value_min', 'log_loss_value_max','log_loss_value_mean', 'log_loss_value_std', 'feature_importances_min', 
                 'feature_importances_max', 'feature_importances_mean', 'feature_importances_std']
+            
+            with open(savepath, 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([ml_options["model_name"],number_rounds, 
+                counter_features_selected_mean, counter_features_selected_std,counter_features_selected_min,counter_features_selected_max, \
+                accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
+                accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
+                    accuracy_class1_std, precision_min, precision_max,precision_mean, precision_std, \
+                    f1_score_min, f1_score_max, f1_score_mean, f1_score_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, \
+                        balanced_accuracy_std, oob_accuracy_min, \
+                    oob_accuracy_max, oob_accuracy_mean, oob_accuracy_std, log_loss_value_min, log_loss_value_max, log_loss_value_mean, log_loss_value_std, \
+                    feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
 
-           
-        with open(savepath, 'a', encoding='UTF8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
+        else:  
+            with open(savepath, 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([ml_options["model_name"],number_rounds, \
+                counter_features_selected_mean, counter_features_selected_std,counter_features_selected_min,counter_features_selected_max, \
+                accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
                 accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
                     accuracy_class1_std, precision_min, precision_max,precision_mean, precision_std, \
                     f1_score_min, f1_score_max, f1_score_mean, f1_score_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, \
@@ -123,7 +143,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                     oob_accuracy_max, oob_accuracy_mean, oob_accuracy_std, log_loss_value_min, log_loss_value_max, log_loss_value_mean, log_loss_value_std, \
                     feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
         
-        print('Number of Rounds: ' + str(number_rounds)  + 'Length X_train: ' + str(len(X_train)) + 'Length X_test' + str(len(X_test)) + 
+        print('Number of Rounds: ' + str(number_rounds) + 'Mean Nr of Selected Features' + str(counter_features_selected_mean) + 
                 '\nMin Accuracy: ' + str(accuracy_min) + '\nMax Accuracy: ' + str(accuracy_max) + '\nMean Accuracy: ' + str(accuracy_mean) + '\nStd Accuracy: ' + str(accuracy_std) +
                 '\nMin Accuracy_class_0: ' + str(accuracy_class0_min) + '\nMax Accuracy_class_0: ' + str(accuracy_class0_max) + '\nMean Accuracy_class_0: ' + str(accuracy_class0_mean) + '\nStd Accuracy_class_0: ' + str(accuracy_class0_std) +
                 '\nMin Accuracy_class_1: ' + str(accuracy_class1_min) + '\nMax Accuracy_class_1: ' + str(accuracy_class1_max) + '\nMean Accuracy_class_1: ' + str(accuracy_class1_mean) + '\nStd Accuracy_class_1: ' + str(accuracy_class1_std) +
