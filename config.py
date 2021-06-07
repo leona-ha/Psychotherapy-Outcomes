@@ -6,8 +6,8 @@ import random
 TIMESTR = time.strftime("%Y%m%d%H%M")
 
 START_TIME = time.time()
-STANDARDPATH = os.environ.get("PSY_PATH")
-DATAPATH_IN = os.environ.get("DATA_PATH") + "prepared_data.csv"
+STANDARDPATH = "C:/Users/Mike/Documents/Github/Psychotherapy-Outcomes/"
+DATAPATH_IN = "F:/Daten_TKDC/prepared_data.csv"
 DATAPATH_OUT = os.path.join(STANDARDPATH, "data", "processed")
 DATAPATH_INTERIM = os.path.join(STANDARDPATH, "data", "interim")
 MODEL_PATH = os.path.join(STANDARDPATH,"model")
@@ -115,7 +115,7 @@ if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 0
+ml_options['hyperparameter_tuning_option'] = 1
 
 ml_options['n_iter_hyper_randsearch'] = 10 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting
@@ -142,8 +142,8 @@ def rf_config(options_dict):
     options_dict['hyperparameter_dict'] = {'n_estimators': [500, 2000], #[500, 2000, 10000]
                                     'criterion': ['gini'], #['gini', 'entropy']
                                     'max_features': ['sqrt', 'log2'],
-                                    'max_depth': [7, 8, 9],
-                                    'min_samples_split': [2,4,6], #[2,4,6,8,10]
+                                    'max_depth': [7, 8, 9, 10],
+                                    'min_samples_split': [2,4,6, 8], #[2,4,6,8,10]
                                     'min_samples_leaf': [1, 2, 3], #[1, 2, 3, 4, 5]
                                     'bootstrap': [True]} # [True, False] verfügbar, aber OOB-Estimate nur für True verfügbar
     
