@@ -89,6 +89,7 @@ if ml_options['nlp_features'] == 1:
 ml_options["model"] = "RF"
 ml_options["n_classes"] = 2
 ml_options["metrics"] = "classification_metrics"
+ml_options["main_metric"] = "recall"
 
 "Data preprocessing"
 
@@ -109,13 +110,12 @@ ml_options['feature_selection_option'] = 5
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
     ml_options['step_reduction_recursive'] = int(input("Choose n of features to remove per step (default is 3):"))
-    ml_options['scoring_recursive'] = 'recall'
 
 if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 0
+ml_options['hyperparameter_tuning_option'] = 3
 
 ml_options['n_iter_hyper_randsearch'] = 10 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting
