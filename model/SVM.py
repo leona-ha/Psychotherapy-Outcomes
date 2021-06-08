@@ -52,7 +52,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     elif ml_options['feature_selection_option'] == 4:
         linear_svc_rfe = LinearSVC(C=0.001, random_state = ml_options["seed"]) 
         rfe = RFECV(estimator=linear_svc_rfe, step=ml_options['step_reduction_recursive'], cv=5,
-                scoring=ml_options['scoring_recursive'], verbose = 1)
+                scoring=ml_options["main_metric"], verbose = 1)
         rfe.fit(X_train, y_train)
         rfepath = os.path.join(MODEL_PATH, f'rfe.pkl')
         pickle.dump(rfe, open(rfepath, 'wb'))

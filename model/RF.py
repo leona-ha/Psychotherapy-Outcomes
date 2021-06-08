@@ -4,6 +4,11 @@ import os
 import csv   
 from config import MODEL_PATH, STANDARDPATH
 import pickle
+#from hpo import get_acc_status, obj_fnc
+from . import hpo
+from hyperopt import hp, tpe, fmin, Trials, STATUS_OK
+from sklearn.preprocessing import scale, normalize
+from sklearn.model_selection import cross_val_score 
 
 from sklearn import preprocessing
 from sklearn import set_config
@@ -59,7 +64,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     elif ml_options['feature_selection_option'] == 4:
         clf_rfe = RandomForestClassifier(n_estimators=1000, random_state=ml_options["seed"])
         rfe = RFECV(estimator=clf_rfe, step=ml_options['step_reduction_recursive'], cv=5,
-                scoring=ml_options['scoring_recursive'], verbose = 1)
+                scoring=ml_options["main_metric"], verbose = 1)
         rfe.fit(X_train, y_train)
         print("Optimal number of features : %d" % rfe.n_features_)
 
@@ -107,9 +112,10 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
         random_hyper_tuning = RandomizedSearchCV(estimator = clf_hyper_tuning, param_distributions = random_parameter,
                                 n_iter = ml_options['n_iter_hyper_randsearch'], cv = ml_options['cvs_hyper_randsearch'],
-                                verbose=0, random_state=ml_options["seed"])
+                                verbose=0, random_state=ml_options["seed"], scoring="recall")
         random_hyper_tuning.fit(X_train, y_train)
         best_parameter = random_hyper_tuning.best_params_
+        print(best_parameter)
     
     elif ml_options['hyperparameter_tuning_option'] == 2:
         random_parameter = ml_options['hyperparameter_dict']
@@ -131,7 +137,47 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
             counter_hyper_tuning = counter_hyper_tuning +1
 
         best_parameter = param_list[np.argmax(oob_accuracy_hyper_tuning)]
+    
+    elif ml_options["hyperparameter_tuning_option"] == 3: ## Hyperopt 
 
+        space = { 'max_depth': hp.choice('max_depth', range(1,20)), 
+           'max_features': hp.choice('max_features', ['auto', 'sqrt', 'log2']), 
+           'n_estimators': hp.choice('n_estimators', range(10,50)), 
+           'min_samples_split':hp.choice('min_samples_split', range(1,10)),
+           'min_samples_leaf':hp.choice('min_samples_leaf', range(1,5)),
+           'criterion': hp.choice('criterion', ["gini", "entropy"]), 
+           'n_estimators': hp.choice('n_estimators', [500,1000,1500,2000,2500,3000,4500,5000,10000]),
+           'model': "RF"}
+        
+        X = X_train
+        y = y_train
+
+        def get_acc_status(clf,X,y): 
+            acc = cross_val_score(clf, X, y, cv=5, scoring='recall').mean() 
+
+            return {'loss': -acc, 'status': STATUS_OK}
+        def obj_fnc(params) :  
+            model = params.get('model').lower() 
+            X_ = X[:]
+            if 'normalize' in params:
+                if params['normalize'] == 1:
+                    X_ = normalize(X_)
+                del params['normalize'] 
+            if 'scale' in params:
+                if params['scale'] == 1:
+                    X_ = scale(X_)
+                del params['scale'] 
+
+            del params['model'] 
+            if model == "rf":
+                clf = RandomForestClassifier(**params) 
+    
+            return(get_acc_status(clf,X_,y))
+
+        hypopt_trials = Trials()
+        best_parameter = fmin(obj_fnc, space, algo=tpe.suggest, max_evals=1000, trials= hypopt_trials)
+ 
+        print(best_parameter)
 
     if ml_options['sampling'] in (0, 1, 2, 3):
         clf = RandomForestClassifier(n_estimators= best_parameter["n_estimators"], criterion = best_parameter["criterion"],
@@ -232,7 +278,6 @@ def predict(X_test, y_test, clf, ml_options):
             else:
                 feature_importances[number_features] = 0
         print("Optimal number of features : %d" % rfe.n_features_)
-
 
     elif ml_options['feature_selection_option'] == 5:
         sfmpath = os.path.join(MODEL_PATH, 'sfm.pkl')

@@ -8,4 +8,4 @@ Dictionary_Affective_norms.txt
 *.png
 rf_leona_short.py
 prepare_run_eval.py
-__pycache__
+__pycache__/

@@ -121,7 +121,6 @@ ml_options['feature_selection_option'] = int(input("""Choose feature selection s
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
     ml_options['step_reduction_recursive'] = int(input("Choose n of features to remove per step (default is 3):"))
-    ml_options['scoring_recursive'] = 'balanced_accuracy'
 
 if ml_options['feature_selection_option'] == 5:
     ml_options['treshold_option'] = 'mean'
@@ -130,7 +129,9 @@ if ml_options['feature_selection_option'] == 5:
 ml_options['hyperparameter_tuning_option'] = int(input("""Choose hyperparameter tuning option:
                                     \n- 0: no hyperparameter tuning
                                     \n- 1: hyperparameter tuning per scikit-learn RandomizeSearch
-                                    \n- 2: hyperparameter tuning per oob error"""))
+                                    \n- 2: hyperparameter tuning per oob error
+                                    \n- 3: hyperparameter tuning per Bayesian optimization (hyperopt)"""))
+
 
 ml_options['hyperparameter_dict'] = {}
 

@@ -1,7 +1,7 @@
 import csv
 import os
 import numpy as np
-from config import STANDARDPATH
+from config import STANDARDPATH, OUTCOME_PATH
 import matplotlib.pyplot as plt
 from scipy.stats import t
 from math import sqrt
@@ -93,7 +93,7 @@ def run(ml_options, input_list, X_train, X_test, model_flatlists):
     _,_,_,p_balanced_acc = corrected_dependent_ttest(model_flatlists[5], balanced_accuracy_flat, X_train, X_test)
        
          
-    savepath = os.path.join(STANDARDPATH, 'model_comparison.csv')
+    savepath = os.path.join(OUTCOME_PATH, 'model_comparison.csv')
     number_rounds = len(accuracy_flat)
     if not os.path.exists(savepath):
         header = ['model_to_compare', 'n_iterations','p_accuracy', 'p_accuracy_class0', 'p_accuracy_class1',
