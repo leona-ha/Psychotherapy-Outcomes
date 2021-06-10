@@ -114,6 +114,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         roc_auc_max = max(roc_auc_flat)
         roc_auc_mean = np.mean(roc_auc_flat)
         roc_auc_std = np.std(roc_auc_flat)
+        feature_importances_count_sum = np.sum(feature_importances_count)
     
 
         
@@ -179,6 +180,17 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
         plt.xticks(range(20), names, rotation=90)
         img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importances.png')
+        plt.savefig(img_safepath)
+
+        importances = feature_importances_mean.reshape((feature_importances_count_sum.shape[1],))
+        indices = np.argsort(importances)[::-1]
+        feature_names = list(X_train.columns)
+        names = [feature_names[i] for i in indices]
+        plt.figure(figsize=(20,15))
+        plt.title("Feature Importance")
+        plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
+        plt.xticks(range(20), names, rotation=90)
+        img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_counts.png')
         plt.savefig(img_safepath)
 
 ### Add input list!!

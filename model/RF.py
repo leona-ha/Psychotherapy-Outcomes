@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import os
 import csv   
-from config import MODEL_PATH, STANDARDPATH
+from config import MODEL_PATH, STANDARDPATH, OUTCOME_PATH
 import pickle
 #from hpo import get_acc_status, obj_fnc
 from . import hpo
@@ -80,7 +80,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
     elif ml_options['feature_selection_option'] == 5: #https://stats.stackexchange.com/questions/276865/interpreting-the-outcomes-of-elastic-net-regression-for-binary-classification
         if ml_options['data_scaling_option'] == 1:
-            clf_elastic_logregression_features = SGDClassifier(loss='log', penalty='elasticnet', l1_ratio=0.5, fit_intercept=False, tol=0.0001, max_iter=1000, random_state=ml_options["seed"])
+            clf_elastic_logregression_features = SGDClassifier(loss='recall', penalty='elasticnet', l1_ratio=0.5, fit_intercept=False, tol=0.0001, max_iter=1000, random_state=ml_options["seed"])
             sfm = SelectFromModel(clf_elastic_logregression_features, threshold=ml_options['threshold_option'])
             sfm.fit(X_train, y_train)
             sfmpath = os.path.join(MODEL_PATH, f'sfm.pkl')
@@ -278,26 +278,33 @@ def predict(X_test, y_test, clf, ml_options):
         rfepath = os.path.join(MODEL_PATH, f'rfe.pkl')
         rfe = pickle.load(open(rfepath, 'rb'))
         feature_importances = np.zeros((len(rfe.support_)))
+        feature_importances_count = np.zeros((len(sfm.get_support())))
         counter_features_selected = 0
         for number_features in range(len(rfe.support_)):
             if rfe.support_[number_features] == True:
                 feature_importances[number_features] = clf.feature_importances_[counter_features_selected]
+                feature_importances_count[number_features] = 1
                 counter_features_selected += 1
             else:
                 feature_importances[number_features] = 0
+                feature_importances_count[number_features] = 0
         print("Optimal number of features : %d" % rfe.n_features_)
 
     elif ml_options['feature_selection_option'] == 5:
         sfmpath = os.path.join(MODEL_PATH, 'sfm.pkl')
         sfm = pickle.load(open(sfmpath, 'rb'))
         feature_importances = np.zeros((len(sfm.get_support())))
+        feature_importances_count = np.zeros((len(sfm.get_support())))
         counter_features_selected = 0
         for number_features in range(len(sfm.get_support())):
             if sfm.get_support()[number_features] == True:
                 feature_importances[number_features] = clf.feature_importances_[counter_features_selected]
+                feature_importances_count[number_features] = 1
                 counter_features_selected += 1
             else:
                 feature_importances[number_features] = 0
+                feature_importances_count[number_features] = 0
+
     print("Nr of selected features:", counter_features_selected)
     
     fpr, tpr, __ = roc_curve(y_test, clf.predict_proba(X_test)[:,1])
@@ -323,7 +330,7 @@ def predict(X_test, y_test, clf, ml_options):
             writer = csv.writer(f)
             writer.writerow([ml_options["model_name"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, oob_accuracy, log_loss_value, roc_auc])
 
-    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy,oob_accuracy, log_loss_value, feature_importances, fpr, tpr, tprs, roc_auc, fraction_positives, mean_predicted_value, counter_features_selected]
+    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy,oob_accuracy, log_loss_value, feature_importances, fpr, tpr, tprs, roc_auc, fraction_positives, mean_predicted_value, counter_features_selected, feature_importances_count]
     return outcome_list
     
 
