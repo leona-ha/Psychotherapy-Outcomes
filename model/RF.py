@@ -6,9 +6,11 @@ from config import MODEL_PATH, STANDARDPATH
 import pickle
 #from hpo import get_acc_status, obj_fnc
 from . import hpo
-from hyperopt import hp, tpe, fmin, Trials, STATUS_OK
+from hyperopt import hp, tpe, fmin, Trials, STATUS_OK,SparkTrials, space_eval
 from sklearn.preprocessing import scale, normalize
 from sklearn.model_selection import cross_val_score 
+import pyspark 
+#from hyperopt.early_stop import no_progress_loss
 
 from sklearn import preprocessing
 from sklearn import set_config
@@ -22,10 +24,11 @@ from sklearn.feature_selection import RFE, RFECV, SelectFromModel
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import log_loss, roc_curve, auc
 from sklearn.calibration import calibration_curve
-from sklearn.inspection import permutation_importance
 
 from imblearn.ensemble import BalancedRandomForestClassifier
 import copy
+
+
 
 def build_model(ml_options, X_train,X_test, y_train,y_test):
 
@@ -112,7 +115,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
         random_hyper_tuning = RandomizedSearchCV(estimator = clf_hyper_tuning, param_distributions = random_parameter,
                                 n_iter = ml_options['n_iter_hyper_randsearch'], cv = ml_options['cvs_hyper_randsearch'],
-                                verbose=0, random_state=ml_options["seed"], scoring="recall")
+                                verbose=0, random_state=ml_options["seed"], scoring="recall", n_jobs=4)
         random_hyper_tuning.fit(X_train, y_train)
         best_parameter = random_hyper_tuning.best_params_
         print(best_parameter)
@@ -127,7 +130,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
         for current_parameter_setting in param_list:
             print("hyperparameter tuning iteration: {}".format(counter_hyper_tuning))
-            clf_hyper_tuning = RandomForestClassifier(n_estimators= current_parameter_setting["n_estimators"],
+            clf_hyper_tuning = RandomForestClassifier(n_jobs=4,n_estimators= current_parameter_setting["n_estimators"],
                             criterion = current_parameter_setting["criterion"], max_features= current_parameter_setting["max_features"],
                             max_depth= current_parameter_setting["max_depth"], min_samples_split= current_parameter_setting["min_samples_split"],
                             min_samples_leaf= current_parameter_setting["min_samples_leaf"], bootstrap= current_parameter_setting["bootstrap"],
@@ -140,20 +143,20 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     
     elif ml_options["hyperparameter_tuning_option"] == 3: ## Hyperopt 
 
-        space = { 'max_depth': hp.choice('max_depth', range(1,20)), 
+        space = { 'max_depth': hp.choice('max_depth', [5,6,7,8,9,10,11,12,13,14,15]), 
            'max_features': hp.choice('max_features', ['auto', 'sqrt', 'log2']), 
-           'n_estimators': hp.choice('n_estimators', range(10,50)), 
-           'min_samples_split':hp.choice('min_samples_split', range(1,10)),
-           'min_samples_leaf':hp.choice('min_samples_leaf', range(1,5)),
+           'n_estimators': hp.choice('n_estimators',[10,20,30,40,50]), 
+           'min_samples_split':hp.choice('min_samples_split', [2,3,4,5,6,7,8,9,10]),
+           'min_samples_leaf':hp.choice('min_samples_leaf', [1,2,3,4,5]),
            'criterion': hp.choice('criterion', ["gini", "entropy"]), 
-           'n_estimators': hp.choice('n_estimators', [500,1000,1500,2000,2500,3000,4500,5000,10000]),
+           'n_estimators': hp.choice('n_estimators', [500,1000,1500,5000,10000]),
            'model': "RF"}
         
         X = X_train
         y = y_train
 
         def get_acc_status(clf,X,y): 
-            acc = cross_val_score(clf, X, y, cv=5, scoring='recall').mean() 
+            acc = cross_val_score(clf, X, y, cv=5, scoring='recall', n_jobs=4).mean() 
 
             return {'loss': -acc, 'status': STATUS_OK}
         def obj_fnc(params) :  
@@ -174,8 +177,11 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     
             return(get_acc_status(clf,X_,y))
 
-        hypopt_trials = Trials()
-        best_parameter = fmin(obj_fnc, space, algo=tpe.suggest, max_evals=1000, trials= hypopt_trials)
+        #hypopt_trials = Trials()
+        spark_trials = SparkTrials(parallelism=4)
+        best = fmin(obj_fnc, space, algo=tpe.suggest, max_evals=100, trials= spark_trials)
+        best_parameter = space_eval(space,best)
+        #early_stop_fn=no_progress_loss(10)
  
         print(best_parameter)
 
@@ -183,7 +189,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
         clf = RandomForestClassifier(n_estimators= best_parameter["n_estimators"], criterion = best_parameter["criterion"],
             max_features= best_parameter["max_features"], max_depth= best_parameter["max_depth"],
             min_samples_split= best_parameter["min_samples_split"], min_samples_leaf= best_parameter["min_samples_leaf"],
-            bootstrap= best_parameter["bootstrap"], oob_score=True, random_state=ml_options["seed"])
+         oob_score=True, random_state=ml_options["seed"])
 
     elif ml_options['sampling']  == 4:
         clf = RandomForestClassifier(n_estimators= best_parameter["n_estimators"], criterion = best_parameter["criterion"],
