@@ -149,7 +149,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
            'min_samples_split':hp.choice('min_samples_split', [2,3,4,5,6,7,8,9,10]),
            'min_samples_leaf':hp.choice('min_samples_leaf', [1,2,3,4,5]),
            'criterion': hp.choice('criterion', ["gini", "entropy"]), 
-           'n_estimators': hp.choice('n_estimators', [500,1000,1500,5000,10000]),
+           'n_estimators': hp.choice('n_estimators', [500,1000,1500,5000]),
            'model': "RF"}
         
         X = X_train
@@ -179,11 +179,14 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     
             return(get_acc_status(clf,X_,y))
 
+        def stop(trial, count=0):
+             return count+1 >= 100, [count+1]
+
         #hypopt_trials = Trials()
-        spark_trials = SparkTrials(parallelism=4)
-        best = fmin(obj_fnc, space, algo=tpe.suggest, max_evals=100, trials= spark_trials)
+        spark_trials = SparkTrials(parallelism=8)
+        early_stop_fn=stop
+        best = fmin(obj_fnc, space, algo=tpe.suggest, max_evals=100, trials= spark_trials,early_stop_fn=early_stop_fn)
         best_parameter = space_eval(space,best)
-        #early_stop_fn=no_progress_loss(10)
  
         print(best_parameter)
 
