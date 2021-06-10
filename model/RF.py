@@ -156,9 +156,11 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
         y = y_train
 
         def get_acc_status(clf,X,y): 
-            acc = cross_val_score(clf, X, y, cv=5, scoring='recall', n_jobs=4).mean() 
+            losses = cross_val_score(clf, X, y, cv=5, scoring='recall')
+            acc = np.mean(losses)
+            var= np.var(losses, ddof=1) 
 
-            return {'loss': -acc, 'status': STATUS_OK}
+            return {'loss': -acc, 'loss_variance':var,'status': STATUS_OK}
         def obj_fnc(params) :  
             model = params.get('model').lower() 
             X_ = X[:]

@@ -6,8 +6,8 @@ import random
 TIMESTR = time.strftime("%Y%m%d%H%M")
 
 START_TIME = time.time()
-STANDARDPATH = "C:/Users/Mike/Documents/Github/Psychotherapy-Outcomes/"
-DATAPATH_IN = "F:/Daten_TKDC/prepared_data.csv"
+STANDARDPATH = os.environ.get("PSY_PATH")
+DATAPATH_IN = os.environ.get("DATA_PATH") + "prepared_data.csv"
 DATAPATH_OUT = os.path.join(STANDARDPATH, "data", "processed")
 DATAPATH_INTERIM = os.path.join(STANDARDPATH, "data", "interim")
 MODEL_PATH = os.path.join(STANDARDPATH,"model")
