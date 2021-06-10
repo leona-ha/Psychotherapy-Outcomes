@@ -110,6 +110,12 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         counter_features_selected_max = max(counter_features_selected_flat)
         counter_features_selected_mean = np.mean(counter_features_selected_flat)
         counter_features_selected_std = np.std(counter_features_selected_flat)
+        roc_auc_min = min(roc_auc_flat)
+        roc_auc_max = max(roc_auc_flat)
+        roc_auc_mean = np.mean(roc_auc_flat)
+        roc_auc_std = np.std(roc_auc_flat)
+    
+
         
         number_rounds = len(accuracy_flat)
         if not os.path.exists(savepath):
@@ -121,7 +127,10 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                         'balanced_accuracy_min', 'balanced_accuracy_max', 'balanced_accuracy_mean', \
                 'balanced_accuracy_std', 'oob_accuracy_min', 'oob_accuracy_max', 'oob_accuracy_mean', 'oob_accuracy_std', \
                 'log_loss_value_min', 'log_loss_value_max','log_loss_value_mean', 'log_loss_value_std', 'feature_importances_min', 
-                'feature_importances_max', 'feature_importances_mean', 'feature_importances_std']
+                'feature_importances_max', 'feature_importances_mean', 'feature_importances_std',
+                'roc_auc_min', 'roc_auc_max', 'roc_auc_mean', 'roc_auc_std']
+
+        
             
             with open(savepath, 'a', encoding='UTF8', newline='') as f:
                 writer = csv.writer(f)
@@ -134,7 +143,8 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                     f1_score_min, f1_score_max, f1_score_mean, f1_score_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, \
                         balanced_accuracy_std, oob_accuracy_min, \
                     oob_accuracy_max, oob_accuracy_mean, oob_accuracy_std, log_loss_value_min, log_loss_value_max, log_loss_value_mean, log_loss_value_std, \
-                    feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
+                    feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std, \
+                     roc_auc_min, roc_auc_max, roc_auc_mean, roc_auc_std])
 
         else:  
             with open(savepath, 'a', encoding='UTF8', newline='') as f:
@@ -147,7 +157,8 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                     f1_score_min, f1_score_max, f1_score_mean, f1_score_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, \
                         balanced_accuracy_std, oob_accuracy_min, \
                     oob_accuracy_max, oob_accuracy_mean, oob_accuracy_std, log_loss_value_min, log_loss_value_max, log_loss_value_mean, log_loss_value_std, \
-                    feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std])
+                    feature_importances_min, feature_importances_max, feature_importances_mean, feature_importances_std, \
+                    roc_auc_min, roc_auc_max, roc_auc_mean, roc_auc_std])
         
         print('Number of Rounds: ' + str(number_rounds) + 'Mean Nr of Selected Features' + str(counter_features_selected_mean) + 
                 '\nMin Accuracy: ' + str(accuracy_min) + '\nMax Accuracy: ' + str(accuracy_max) + '\nMean Accuracy: ' + str(accuracy_mean) + '\nStd Accuracy: ' + str(accuracy_std) +
@@ -158,19 +169,17 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                 '\nMin Log-Loss: ' + str(log_loss_value_min) + '\nMax Log-Loss: ' + str(log_loss_value_max) + '\nMean Log-Loss: ' + str(log_loss_value_mean) + '\nStd Log-Loss: ' + str(log_loss_value_std)+
                 '\nMean Precision:' + str(precision_mean)+ '\nMean F1:' + str(f1_score_mean))
 
-        feature_plot = input("Would you like to plot feature importances? (y/n):")
 
-        if feature_plot == "y":
-            importances = feature_importances_mean.reshape((feature_importances_mean.shape[1],))
-            indices = np.argsort(importances)[::-1]
-            feature_names = list(X_train.columns)
-            names = [feature_names[i] for i in indices]
-            plt.figure(figsize=(20,15))
-            plt.title("Feature Importance")
-            plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
-            plt.xticks(range(20), names, rotation=90)
-            img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importances.png')
-            plt.savefig(img_safepath)
+        importances = feature_importances_mean.reshape((feature_importances_mean.shape[1],))
+        indices = np.argsort(importances)[::-1]
+        feature_names = list(X_train.columns)
+        names = [feature_names[i] for i in indices]
+        plt.figure(figsize=(20,15))
+        plt.title("Feature Importance")
+        plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
+        plt.xticks(range(20), names, rotation=90)
+        img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importances.png')
+        plt.savefig(img_safepath)
 
 ### Add input list!!
 
@@ -228,18 +237,17 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                 '\nMin Accuracy_class_1: ' + str(accuracy_class1_min) + '\nMax Accuracy_class_1: ' + str(accuracy_class1_max) + '\nMean Accuracy_class_1: ' + str(accuracy_class1_mean) + '\nStd Accuracy_class_1: ' + str(accuracy_class1_std) +
                 '\nMin Balanced_Accuracy: ' + str(balanced_accuracy_min) + '\nMax Balanced_Accuracy: ' + str(balanced_accuracy_max) + '\nMean Balanced_Accuracy: ' + str(balanced_accuracy_mean) + '\nStd Balanced_Accuracy: ' + str(balanced_accuracy_std))
 
-        if feature_plot == "y":
-            importances = feature_importances_mean.reshape((feature_importances_mean.shape[1],))
-            top_positive_coefficients = np.argsort(importances)[-10:]
-            top_negative_coefficients = np.argsort(importances)[:10]
-            top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
-            plt.figure(figsize=(18, 7))
-            colors = ['green' if c < 0 else 'blue' for c in importances[top_coefficients]]
-            plt.bar(np.arange(2 * 10), importances[top_coefficients], color=colors)
-            feature_names = list(X_train.columns)
-            feature_names = np.array(feature_names)
-            plt.xticks(np.arange(1 + 2 * 10), feature_names[top_coefficients], rotation=45, ha='right')
-            plt.savefig(f'{ml_options["model_name"]}_feature_importances.png')
+        importances = feature_importances_mean.reshape((feature_importances_mean.shape[1],))
+        top_positive_coefficients = np.argsort(importances)[-10:]
+        top_negative_coefficients = np.argsort(importances)[:10]
+        top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
+        plt.figure(figsize=(18, 7))
+        colors = ['green' if c < 0 else 'blue' for c in importances[top_coefficients]]
+        plt.bar(np.arange(2 * 10), importances[top_coefficients], color=colors)
+        feature_names = list(X_train.columns)
+        feature_names = np.array(feature_names)
+        plt.xticks(np.arange(1 + 2 * 10), feature_names[top_coefficients], rotation=45, ha='right')
+        plt.savefig(f'{ml_options["model_name"]}_feature_importances.png')
     
 
     elif ml_options["model_architecture"] == "NN":
@@ -316,7 +324,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                 '\nMin Balanced_Accuracy: ' + str(balanced_accuracy_min) + '\nMax Balanced_Accuracy: ' + str(balanced_accuracy_max) + '\nMean Balanced_Accuracy: ' + str(balanced_accuracy_mean) + '\nStd Balanced_Accuracy: ' + str(balanced_accuracy_std) +
                 '\nMean Precision:' + str(precision_mean) + '\nMean F1:' + str(f1_score_mean) + '\nMean Log-Loss: ' + str(log_loss_value_mean))
     
-    model_flatlists = [accuracy_flat, accuracy_class1_flat, accuracy_class0_flat, precision_flat, f1_score_flat, balanced_accuracy_flat]
+    model_flatlists = [accuracy_flat, accuracy_class1_flat, accuracy_class0_flat, precision_flat, f1_score_flat, balanced_accuracy_flat, roc_auc_flat]
     
     return model_flatlists
 

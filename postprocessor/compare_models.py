@@ -37,6 +37,7 @@ def run(ml_options, input_list, X_train, X_test, model_flatlists):
     precision_flat = []
     f1_score_flat = []
     balanced_accuracy_flat = []
+    roc_auc_flat = []
     
 
     for counter, sublist in enumerate(input_list):
@@ -53,6 +54,8 @@ def run(ml_options, input_list, X_train, X_test, model_flatlists):
                 f1_score_flat.append(sublist[itemnumber])
             elif itemnumber == 5:
                 balanced_accuracy_flat.append(sublist[itemnumber])
+            elif itemnumber == 6:
+                roc_auc_flat.append(sublist[itemnumber])
            
 
     accuracy_min = min(accuracy_flat)
@@ -79,6 +82,10 @@ def run(ml_options, input_list, X_train, X_test, model_flatlists):
     balanced_accuracy_max = max(balanced_accuracy_flat)
     balanced_accuracy_mean = np.mean(balanced_accuracy_flat)
     balanced_accuracy_std = np.std(balanced_accuracy_flat)
+    roc_auc_min = min(roc_auc_flat)
+    roc_auc_max = max(roc_auc_flat)
+    roc_auc_mean = np.mean(roc_auc_flat)
+    roc_auc_std = np.std(roc_auc_flat)
 
     _,_,_, p_accuracy = corrected_dependent_ttest(model_flatlists[0], accuracy_flat, X_train, X_test)
 
@@ -91,34 +98,36 @@ def run(ml_options, input_list, X_train, X_test, model_flatlists):
     _,_,_,p_f1_score = corrected_dependent_ttest(model_flatlists[4], f1_score_flat, X_train, X_test)
 
     _,_,_,p_balanced_acc = corrected_dependent_ttest(model_flatlists[5], balanced_accuracy_flat, X_train, X_test)
+
+    _,_,_,p_roc_auc = corrected_dependent_ttest(model_flatlists[6], roc_auc_flat, X_train, X_test)
        
          
     savepath = os.path.join(OUTCOME_PATH, 'model_comparison.csv')
     number_rounds = len(accuracy_flat)
     if not os.path.exists(savepath):
-        header = ['model_to_compare', 'n_iterations','p_accuracy', 'p_accuracy_class0', 'p_accuracy_class1',
-                'p_precision', 'p_f1_score', 'p_balanced_acc',
+        header = ['model_to_compare', 'n_iterations','p_accuracy', 'p_accuracy_class0', 'p_accuracy_class1', \
+                'p_precision', 'p_f1_score', 'p_balanced_acc','p_roc_auc', \
              'accuracy_mean', 'accuracy_std', 'accuracy_class0_mean', 'accuracy_class0_std', 'accuracy_class1_mean','accuracy_class1_std', \
                 'precision_mean', 'precision_std','f1_score_mean', 'f1_score_std', \
-                 'balanced_accuracy_mean', 'balanced_accuracy_std']
+                 'balanced_accuracy_mean', 'balanced_accuracy_std', 'roc_auc_mean', 'roc_auc_std']
 
         with open(savepath, 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             # write the header
             writer.writerow(header)
             # write outcome rows
-            writer.writerow([ml_options["model_name"],number_rounds, p_accuracy, p_accuracy_class0, p_accuracy_class1, p_precision, p_f1_score, p_balanced_acc, \
+            writer.writerow([ml_options["model_name"],number_rounds, p_accuracy, p_accuracy_class0, p_accuracy_class1, p_precision, p_f1_score, p_balanced_acc, p_roc_auc,\
                 accuracy_mean, accuracy_std, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_mean, \
                     accuracy_class1_std, precision_mean, precision_std,f1_score_mean, f1_score_std,  balanced_accuracy_mean, \
-                        balanced_accuracy_std])
+                        balanced_accuracy_std, roc_auc_mean, roc_auc_std])
     else:
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([ml_options["model_name"],number_rounds, \
-                p_accuracy, p_accuracy_class0, p_accuracy_class1, p_precision, p_f1_score, p_balanced_acc, \
+                p_accuracy, p_accuracy_class0, p_accuracy_class1, p_precision, p_f1_score, p_balanced_acc,p_roc_auc, \
                 accuracy_mean, accuracy_std, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_mean, \
                     accuracy_class1_std, precision_mean, precision_std,f1_score_mean, f1_score_std,  balanced_accuracy_mean, \
-                        balanced_accuracy_std])
+                        balanced_accuracy_std, roc_auc_mean, roc_auc_std])
 
 
 #
