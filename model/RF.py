@@ -62,7 +62,6 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
         X_train= X_train[:,rfe.support_]
         X_test = X_test[:,rfe.support_]
-        print(f"Selected columns are {X_train}")
 
     elif ml_options['feature_selection_option'] == 4:
         clf_rfe = RandomForestClassifier(n_estimators=1000, random_state=ml_options["seed"])
@@ -80,7 +79,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
     elif ml_options['feature_selection_option'] == 5: #https://stats.stackexchange.com/questions/276865/interpreting-the-outcomes-of-elastic-net-regression-for-binary-classification
         if ml_options['data_scaling_option'] == 1:
-            clf_elastic_logregression_features = SGDClassifier(loss='recall', penalty='elasticnet', l1_ratio=0.5, fit_intercept=False, tol=0.0001, max_iter=1000, random_state=ml_options["seed"])
+            clf_elastic_logregression_features = SGDClassifier(loss='log', penalty='elasticnet', l1_ratio=0.5, fit_intercept=False, tol=0.0001, max_iter=1000, random_state=ml_options["seed"])
             sfm = SelectFromModel(clf_elastic_logregression_features, threshold=ml_options['threshold_option'])
             sfm.fit(X_train, y_train)
             sfmpath = os.path.join(MODEL_PATH, f'sfm.pkl')
@@ -118,7 +117,6 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
                                 verbose=0, random_state=ml_options["seed"], scoring="recall", n_jobs=4)
         random_hyper_tuning.fit(X_train, y_train)
         best_parameter = random_hyper_tuning.best_params_
-        print(best_parameter)
     
     elif ml_options['hyperparameter_tuning_option'] == 2:
         random_parameter = ml_options['hyperparameter_dict']
@@ -144,9 +142,9 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     elif ml_options["hyperparameter_tuning_option"] == 3: ## Hyperopt 
 
         space = { 'max_depth': hp.choice('max_depth', [5,6,7,8,9,10,11,12,13,14,15]), 
-           'max_features': hp.choice('max_features', ['auto', 'sqrt', 'log2']), 
+           'max_features': hp.choice('max_features', ['sqrt', 'log2']), 
            'n_estimators': hp.choice('n_estimators',[10,20,30,40,50]), 
-           'min_samples_split':hp.choice('min_samples_split', [2,3,4,5,6,7,8,9,10]),
+           'min_samples_split':hp.choice('min_samples_split', [2,3,4,5,6,7,8]),
            'min_samples_leaf':hp.choice('min_samples_leaf', [1,2,3,4,5]),
            'criterion': hp.choice('criterion', ["gini", "entropy"]), 
            'n_estimators': hp.choice('n_estimators', [500,1000,1500,5000]),
@@ -188,7 +186,6 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
         best = fmin(obj_fnc, space, algo=tpe.suggest, max_evals=100, trials= spark_trials,early_stop_fn=early_stop_fn)
         best_parameter = space_eval(space,best)
  
-        print(best_parameter)
 
     if ml_options['sampling'] in (0, 1, 2, 3):
         clf = RandomForestClassifier(n_estimators= best_parameter["n_estimators"], criterion = best_parameter["criterion"],
@@ -308,7 +305,7 @@ def predict(X_test, y_test, clf, ml_options):
                 feature_importances[number_features] = 0
                 feature_importances_count[number_features] = 0
 
-    print("Nr of selected features:", counter_features_selected)
+    #print("Nr of selected features:", counter_features_selected)
     
     fpr, tpr, __ = roc_curve(y_test, clf.predict_proba(X_test)[:,1])
     mean_fpr = np.linspace(0, 1, 100)
@@ -316,8 +313,8 @@ def predict(X_test, y_test, clf, ml_options):
     roc_auc = auc(fpr, tpr)
     fraction_positives, mean_predicted_value = calibration_curve(y_test, clf.predict_proba(X_test)[:,1], n_bins=10)
     
-    print('Round Number: ', str(ml_options["seed"]), '\nSelected Features: ', str(counter_features_selected),'\nAccuracy: ', str(accuracy), '\nAccuracy_class0: ', str(accuracy_class1), '\nAccuracy_class1/Recall: ', 
-        str(accuracy_class0), '\nPrecision: ', str(precision), '\nF1_Score: ', str(f1_score), '\nOOB Accuracy ', str(oob_accuracy), '\nLog Loss value: ', str(log_loss_value))
+  #  print('Round Number: ', str(ml_options["seed"]), '\nSelected Features: ', str(counter_features_selected),'\nAccuracy: ', str(accuracy), '\nAccuracy_class0: ', str(accuracy_class1), '\nAccuracy_class1/Recall: ', 
+     #   str(accuracy_class0), '\nPrecision: ', str(precision), '\nF1_Score: ', str(f1_score), '\nOOB Accuracy ', str(oob_accuracy), '\nLog Loss value: ', str(log_loss_value))
 
     savepath = os.path.join(STANDARDPATH, 'outcomes_rf.csv')
     if not os.path.exists(savepath):
@@ -331,7 +328,7 @@ def predict(X_test, y_test, clf, ml_options):
     else:
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([ml_options["model_name"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, oob_accuracy, log_loss_value, roc_auc])
+            writer.writerow([ml_options["model_name"],ml_options["seed"], counter_features_selected,accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, oob_accuracy, log_loss_value, roc_auc])
 
     outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy,oob_accuracy, log_loss_value, feature_importances, fpr, tpr, tprs, roc_auc, fraction_positives, mean_predicted_value, counter_features_selected, feature_importances_count]
     return outcome_list
