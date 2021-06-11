@@ -34,7 +34,7 @@ def run(ml_options, X_train,X_test, y_train,y_test):
             else:
                 counter_class0_incorrect += 1
                 
-    print(counter_class1_correct, counter_class0_correct, counter_class1_incorrect,counter_class0_incorrect)
+    #print(counter_class1_correct, counter_class0_correct, counter_class1_incorrect,counter_class0_incorrect)
 
     fpr, tpr, __ = roc_curve(y_test, log_model.predict_proba(X_test)[:,1])
     mean_fpr = np.linspace(0, 1, 100)
@@ -52,4 +52,5 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     f1_score = 2 * ((accuracy_class1 * precision)/(accuracy_class1+precision))
     #log_loss_value = log_loss(y_test, clf.predict_proba(X_test), normalize=True)
     outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc]
+    
     return outcome_list
