@@ -74,24 +74,38 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             pathev_columns = ['PRE_pathev1', 'PRE_pathev2', 'PRE_pathev3', 'PRE_pathev4','PRE_pathev5', 'PRE_pathev6', 
                         'PRE_pathev7', 'PRE_pathev8', 'PRE_pathev9', 'PRE_pathev10']
             data[pathev_columns] = data[pathev_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
-            invert_columns = ['PRE_pathev1', 'PRE_pathev3','PRE_pathev5','PRE_pathev7','PRE_pathev9', 'PRE_pathev10']
+            invert_columns = ['PRE_pathev1', 'PRE_pathev5','PRE_pathev9', 'PRE_pathev10']
 
             for column in invert_columns:
                 data[column] = data[column].map({1:5, 2:4, 3:3, 4:2, 5:1})
             
-            data["pathev_sum"] = data[pathev_columns].sum(axis=1).astype('Int64')
+            data["pathev_zuv"] = data[['PRE_pathev1','PRE_pathev4', 'PRE_pathev5', 'PRE_pathev9']].sum(axis=1).astype('Int64')
+            data["pathev_fur"] = data[['PRE_pathev3', 'PRE_pathev7']].sum(axis=1).astype('Int64')
+            data["pathev_pas"] = data[['PRE_pathev2', 'PRE_pathev6', 'PRE_pathev8', 'PRE_pathev10']].sum(axis=1).astype('Int64')
 
-            euheals_columns = ['PRE_euheals1','PRE_euheals2','PRE_euheals3']
-            data[euheals_columns] = data[euheals_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
-            data["euheals_sum"] = data[euheals_columns].sum(axis=1).astype('Int64')
+
+            #euheals_columns = ['PRE_euheals1','PRE_euheals2','PRE_euheals3']
+            #data[euheals_columns] = data[euheals_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
+            #data["euheals_sum"] = data[euheals_columns].sum(axis=1).astype('Int64')
 
             ipqr_columns = ['PRE_ipqr1','PRE_ipqr2','PRE_ipqr3','PRE_ipqr4','PRE_ipqr5',
                     'PRE_ipqr6','PRE_ipqr7','PRE_ipqr8','PRE_ipqr9','PRE_ipqr10','PRE_ipqr11','PRE_ipqr12','PRE_ipqr13',
                     'PRE_ipqr14','PRE_ipqr15','PRE_ipqr16','PRE_ipqr17','PRE_ipqr18']
                     
             data[ipqr_columns] = data[ipqr_columns].apply(pd.to_numeric, errors='coerce')
-            data['PRE_ipqr8'] = data['PRE_ipqr8'].map({1:5, 2:4, 3:3, 4:2, 5:1})
-            data["ipqr_sum"] = data[ipqr_columns].sum(axis=1).astype('Int64')
+            data['PRE_ipqr7'] = data['PRE_ipqr7'].map({1:5, 2:4, 3:3, 4:2, 5:1})
+            data['PRE_ipqr9'] = data['PRE_ipqr9'].map({1:5, 2:4, 3:3, 4:2, 5:1})
+            data['PRE_ipqr10'] = data['PRE_ipqr10'].map({1:5, 2:4, 3:3, 4:2, 5:1})
+            data['PRE_ipqr11'] = data['PRE_ipqr11'].map({1:5, 2:4, 3:3, 4:2, 5:1})
+            data['PRE_ipqr12'] = data['PRE_ipqr12'].map({1:5, 2:4, 3:3, 4:2, 5:1})
+
+            data["ipqr_timeline"] = data[['PRE_ipqr1','PRE_ipqr2','PRE_ipqr3']].sum(axis=1).astype('Int64')
+            data["ipqr_cons"] = data[['PRE_ipqr4','PRE_ipqr5','PRE_ipqr6']].sum(axis=1).astype('Int64')
+            data["ipqr_perscont"] = data[['PRE_ipqr7','PRE_ipqr8','PRE_ipqr9']].sum(axis=1).astype('Int64')
+            data["ipqr_illcoher"] = data[['PRE_ipqr10','PRE_ipqr11','PRE_ipqr12']].sum(axis=1).astype('Int64')
+            data["ipqr_timecycl"] = data[['PRE_ipqr13','PRE_ipqr14','PRE_ipqr15']].sum(axis=1).astype('Int64')
+            data["ipqr_emotrep"] = data[['PRE_ipqr16','PRE_ipqr17','PRE_ipqr18']].sum(axis=1).astype('Int64')
+
 
             gpse_columns = ['PRE_gpse1','PRE_gpse2','PRE_gpse3','PRE_gpse4','PRE_gpse5','PRE_gpse6',
                     'PRE_gpse7','PRE_gpse8','PRE_gpse9','PRE_gpse10']
