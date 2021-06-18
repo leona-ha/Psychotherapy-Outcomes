@@ -32,9 +32,8 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
                'PRE_treatment','PRE_support','PRE_kPT','PRE_ill','PRE_sickleave','PRE_doc',
                'PRE_neurol','PRE_selfhelp','PRE_counsel','PRE_therapy','PRE_med','PRE_hospital',
                'PRE_hos_other', 'PRE_eurohis1','PRE_eurohis2','PRE_eurohis3','PRE_eurohis4','PRE_eurohis5',
-               'PRE_eurohis6','PRE_eurohis7','PRE_eurohis8', 'TI_score','TI_bip1',
-               'TI_bip2','TI_hyp_x','TI_MDE','TI_dyst','TI_MDE_x','TI_20_xx','TI_F20_8','TI_F25','TI_F22','TI_F23',
-               'TI_F29','TI_MDE_vr','TI_MDE_tr','TI_HYP_vr','TI_MAN_vr','TI_medik','TI_rekrut','PRE_gad1',
+               'PRE_eurohis6','PRE_eurohis7','PRE_eurohis8', 'TI_score','TI_MDE','TI_dyst','TI_MDE_x',
+               'TI_MDE_vr','TI_MDE_tr','TI_medik','TI_rekrut','PRE_gad1',
                'PRE_gad2','PRE_gad3','PRE_gad4','PRE_gad5','PRE_gad6','PRE_gad7', 'PRE_costa1', 'PRE_costa2', 'PRE_costa3',
               'PRE_costa4', 'PRE_costa5', 'PRE_costa6', 'PRE_costa7', 'PRE_costa8', 'PRE_costa9', 'PRE_costa10', 'PRE_costa11',
               'PRE_costa12', 'PRE_costa13', 'PRE_costa14', 'PRE_costa15', 'PRE_costa16', 'PRE_costa17', 'PRE_costa18',
@@ -51,7 +50,6 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
                 'PRE_imet8','PRE_imet9','PRE_imet10', 'M1_phqD1','M1_phqD2','M1_phqD3','M1_phqD4','M1_phqD5','M1_phqD6',
                'M1_phqD7','M1_phqD8','M1_phqD9']
 
-ml_options["drop_columns"] = ["TI_F20_8", "TI_F29", "TI_F23", "TI_F22", "TI_hyp_x", "TI_F25", "TI_20_xx"]
 
 ml_options["target_columns_post"] =  ['POST_phqD1','POST_phqD2','POST_phqD3','POST_phqD4','POST_phqD5',
                'POST_phqD6','POST_phqD7','POST_phqD8','POST_phqD9']

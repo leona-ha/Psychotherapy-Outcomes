@@ -25,6 +25,7 @@ def prepare_data(ml_options, numrun, features=None):
     if ml_options['missing_outcome_option'] == 1:
         print("The number of dropped rows is:", len(features[features[target_columns_post].isnull().all(axis=1)]))
         features = features[features[target_columns_post].notnull().all(axis=1)]
+  
             
     """
     "Create sum score for post phq 

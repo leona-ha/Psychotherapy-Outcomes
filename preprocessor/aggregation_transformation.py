@@ -1,3 +1,4 @@
+
 from config import STANDARDPATH, DATAPATH_IN, DATAPATH_OUT
 from sklearn.model_selection import train_test_split
 import json
@@ -19,8 +20,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             """
 
 
-            diagnose_cols = ['TI_bip1','TI_bip2','TI_MDE','TI_dyst','TI_MDE_vr','TI_MDE_tr','TI_HYP_vr',
-                            'TI_MAN_vr','TI_medik']
+            diagnose_cols = ['TI_MDE','TI_dyst','TI_MDE_vr','TI_MDE_tr']
             data["n_diagnoses"] = data[diagnose_cols].sum(axis=1)
 
             pre_bdi_columns = ['PRE_bdi1','PRE_bdi2','PRE_bdi3',
@@ -37,11 +37,48 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                 data[early_phq_columns] = data[early_phq_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
                 data["phq_early_sum"] = data[early_phq_columns].sum(axis=1)
                 data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
-                data.drop(['M1_phqD1', 'M1_phqD2', 'M1_phqD3', 'M1_phqD4', 'M1_phqD5', 'M1_phqD6',
-               'M1_phqD7', 'M1_phqD8', 'M1_phqD9','M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
+                data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
                'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
                'M4_phqD7','M4_phqD8','M4_phqD9'], axis=1, inplace=True)
                 data.drop("phq_early_sum", axis=1, inplace=True)
+
+                if ml_options["include_costa_sewip"] ==1:
+                    M3_sewip_cols = ['M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
+                    'M3_sewip9','M3_sewip10','M3_sewip11','M3_sewip12','M3_sewip13','M3_sewip14','M3_sewip15','M3_sewip16','M3_sewip17',
+                    'M3_sewip18','M3_sewip19','M3_sewip20','M3_sewip21']
+
+                    M3_costa_cols = ['M3_costa1','M3_costa2','M3_costa5','M3_costa6','M3_costa8',
+                    'M3_costa10','M3_costa11','M3_costa12','M3_costa13','M3_costa14','M3_costa15',
+                    'M3_costa18']
+
+                    data[M3_sewip_cols] = data[M3_sewip_cols].apply(pd.to_numeric, errors='coerce').astype('Int64')
+                    data[M3_costa_cols] = data[M3_costa_cols].apply(pd.to_numeric, errors='coerce').astype('Int64')
+
+                    data["M3_costa_sum"] = data[M3_costa_cols].sum(axis=1).astype('Int64')
+                    data["M3_sewip_sum"] = data[M3_sewip_cols].sum(axis=1).astype('Int64')
+
+                    data["sewip_emo"] = data[['M3_sewip1', 'M3_sewip8', 'M3_sewip15']].sum(axis=1).astype('Int64')
+                    data["sewip_prob"] = data[['M3_sewip2', 'M3_sewip9', 'M3_sewip16']].sum(axis=1).astype('Int64')
+                    data["sewip_res"] = data[['M3_sewip3', 'M3_sewip10', 'M3_sewip17']].sum(axis=1).astype('Int64')
+                    data["sewip_mean"] = data[['M3_sewip4', 'M3_sewip11', 'M3_sewip18']].sum(axis=1).astype('Int64')
+                    data["sewip_collab"] = data[['M3_sewip5', 'M3_sewip6', 'M3_sewip12', 'M3_sewip13', 'M3_sewip19', 'M3_sewip20']].sum(axis=1).astype('Int64')
+                    data["sewip_mast"] = data[['M3_sewip7', 'M3_sewip14', 'M3_sewip21']].sum(axis=1).astype('Int64')
+
+                    #data.drop(M3_sewip_cols, axis=1, inplace=True)
+
+
+
+            elif ml_options["include_early_change"] == 0:
+                data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
+               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
+               'M4_phqD7','M4_phqD8','M4_phqD9', 
+               'M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
+                    'M3_sewip9','M3_sewip10','M3_sewip11','M3_sewip12','M3_sewip13','M3_sewip14','M3_sewip15','M3_sewip16','M3_sewip17',
+                    'M3_sewip18','M3_sewip19','M3_sewip20','M3_sewip21',
+                'M3_costa1','M3_costa2','M3_costa5','M3_costa6','M3_costa8',
+                    'M3_costa10','M3_costa11','M3_costa12','M3_costa13','M3_costa14','M3_costa15',
+                    'M3_costa18'], axis=1, inplace=True)
+        
 
             phq_s_columns = ['PRE_phqS1','PRE_phqS2','PRE_phqS3','PRE_phqS4','PRE_phqS5','PRE_phqS6','PRE_phqS7',
                     'PRE_phqS8','PRE_phqS9', 'PRE_phqS10']
@@ -64,9 +101,9 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data[gad_columns] = data[gad_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["gad_sum"] = data[gad_columns].sum(axis=1)
 
-            costa_columns = ['PRE_costa1', 'PRE_costa2', 'PRE_costa3','PRE_costa4', 'PRE_costa5', 'PRE_costa6', 'PRE_costa7', 
-                        'PRE_costa8', 'PRE_costa9', 'PRE_costa10', 'PRE_costa11','PRE_costa12', 'PRE_costa13', 'PRE_costa14',
-                        'PRE_costa15', 'PRE_costa16', 'PRE_costa17', 'PRE_costa18','PRE_costa19', 'PRE_costa20', 'PRE_costa21']
+            costa_columns = ['PRE_costa1', 'PRE_costa2', 'PRE_costa5', 'PRE_costa6',
+                        'PRE_costa8', 'PRE_costa10', 'PRE_costa11','PRE_costa12', 'PRE_costa13', 'PRE_costa14',
+                        'PRE_costa15', 'PRE_costa18']
             
             data[costa_columns] = data[costa_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["costa_sum"] = data[costa_columns].sum(axis=1).astype('Int64')
@@ -83,10 +120,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data["pathev_fur"] = data[['PRE_pathev3', 'PRE_pathev7']].sum(axis=1).astype('Int64')
             data["pathev_pas"] = data[['PRE_pathev2', 'PRE_pathev6', 'PRE_pathev8', 'PRE_pathev10']].sum(axis=1).astype('Int64')
 
-
-            #euheals_columns = ['PRE_euheals1','PRE_euheals2','PRE_euheals3']
-            #data[euheals_columns] = data[euheals_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
-            #data["euheals_sum"] = data[euheals_columns].sum(axis=1).astype('Int64')
 
             ipqr_columns = ['PRE_ipqr1','PRE_ipqr2','PRE_ipqr3','PRE_ipqr4','PRE_ipqr5',
                     'PRE_ipqr6','PRE_ipqr7','PRE_ipqr8','PRE_ipqr9','PRE_ipqr10','PRE_ipqr11','PRE_ipqr12','PRE_ipqr13',
@@ -123,6 +156,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             pvq_columns = ['PRE_pvq1','PRE_pvq2','PRE_pvq3','PRE_pvq4','PRE_pvq5','PRE_pvq6','PRE_pvq7','PRE_pvq8','PRE_pvq9',
                     'PRE_pvq10','PRE_pvq11','PRE_pvq12','PRE_pvq13','PRE_pvq14','PRE_pvq15','PRE_pvq16','PRE_pvq17',
                     'PRE_pvq18','PRE_pvq19','PRE_pvq20','PRE_pvq21']
+                    
             data[pvq_columns] = data[pvq_columns].apply(pd.to_numeric, errors ='coerce').astype('Int64')
 
 
