@@ -51,7 +51,7 @@ def run(ml_options, X_train,X_test, y_train,y_test):
             else:
                 counter_class0_incorrect += 1
                 
-    print(counter_class1_correct, counter_class0_correct, counter_class1_incorrect,counter_class0_incorrect)
+    #print(counter_class1_correct, counter_class0_correct, counter_class1_incorrect,counter_class0_incorrect)
 
     """ Calculate accuracy scores """
 
