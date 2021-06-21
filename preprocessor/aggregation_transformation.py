@@ -57,12 +57,12 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                     data["M3_costa_sum"] = data[M3_costa_cols].sum(axis=1).astype('Int64')
                     data["M3_sewip_sum"] = data[M3_sewip_cols].sum(axis=1).astype('Int64')
 
-                    data["sewip_emo"] = data[['M3_sewip1', 'M3_sewip8', 'M3_sewip15']].sum(axis=1).astype('Int64')
-                    data["sewip_prob"] = data[['M3_sewip2', 'M3_sewip9', 'M3_sewip16']].sum(axis=1).astype('Int64')
-                    data["sewip_res"] = data[['M3_sewip3', 'M3_sewip10', 'M3_sewip17']].sum(axis=1).astype('Int64')
-                    data["sewip_mean"] = data[['M3_sewip4', 'M3_sewip11', 'M3_sewip18']].sum(axis=1).astype('Int64')
-                    data["sewip_collab"] = data[['M3_sewip5', 'M3_sewip6', 'M3_sewip12', 'M3_sewip13', 'M3_sewip19', 'M3_sewip20']].sum(axis=1).astype('Int64')
-                    data["sewip_mast"] = data[['M3_sewip7', 'M3_sewip14', 'M3_sewip21']].sum(axis=1).astype('Int64')
+                    ##data["sewip_emo"] = data[['M3_sewip1', 'M3_sewip8', 'M3_sewip15']].sum(axis=1).astype('Int64')
+                    #data["sewip_prob"] = data[['M3_sewip2', 'M3_sewip9', 'M3_sewip16']].sum(axis=1).astype('Int64')
+                    #data["sewip_res"] = data[['M3_sewip3', 'M3_sewip10', 'M3_sewip17']].sum(axis=1).astype('Int64')
+                    #data["sewip_mean"] = data[['M3_sewip4', 'M3_sewip11', 'M3_sewip18']].sum(axis=1).astype('Int64')
+                    #data["sewip_collab"] = data[['M3_sewip5', 'M3_sewip6', 'M3_sewip12', 'M3_sewip13', 'M3_sewip19', 'M3_sewip20']].sum(axis=1).astype('Int64')
+                    #data["sewip_mast"] = data[['M3_sewip7', 'M3_sewip14', 'M3_sewip21']].sum(axis=1).astype('Int64')
 
                     #data.drop(M3_sewip_cols, axis=1, inplace=True)
 
