@@ -278,7 +278,7 @@ def predict(X_test, y_test, clf, ml_options):
         rfepath = os.path.join(MODEL_PATH, f'rfe.pkl')
         rfe = pickle.load(open(rfepath, 'rb'))
         feature_importances = np.zeros((len(rfe.support_)))
-        feature_importances_count = np.zeros((len(sfm.get_support())))
+        feature_importances_count = np.zeros((len(rfe.support_)))
         counter_features_selected = 0
         for number_features in range(len(rfe.support_)):
             if rfe.support_[number_features] == True:

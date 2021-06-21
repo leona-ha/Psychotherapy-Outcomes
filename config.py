@@ -105,7 +105,7 @@ ml_options['dummy_encoding'] = 1
 
 "Model Tuning"
 
-ml_options['feature_selection_option'] = 5 
+ml_options['feature_selection_option'] = 4 
 
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
@@ -115,7 +115,7 @@ if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 3
+ml_options['hyperparameter_tuning_option'] = 1
 
 ml_options['n_iter_hyper_randsearch'] = 10 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting
@@ -139,10 +139,10 @@ ml_options['baseline_model'] = 'logreg'
 
 def rf_config(options_dict):
     options_dict['data_scaling_option'] = 1
-    options_dict['hyperparameter_dict'] = {'n_estimators': [500, 2000], #[500, 2000, 10000]
+    options_dict['hyperparameter_dict'] = {'n_estimators': [500, 1000,2000], #[500, 2000, 10000]
                                     'criterion': ['gini'], #['gini', 'entropy']
                                     'max_features': ['sqrt', 'log2'],
-                                    'max_depth': [7, 8, 9, 10],
+                                    'max_depth': [7, 8, 9, 10,11,12],
                                     'min_samples_split': [2,4,6, 8], #[2,4,6,8,10]
                                     'min_samples_leaf': [1, 2, 3], #[1, 2, 3, 4, 5]
                                     'bootstrap': [True]} # [True, False] verfügbar, aber OOB-Estimate nur für True verfügbar

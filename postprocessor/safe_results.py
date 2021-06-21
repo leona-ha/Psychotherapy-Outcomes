@@ -35,7 +35,6 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         feature_importances_flat = np.zeros((len(input_list),len(input_list[0][8])))
         feature_importances_count_flat = np.zeros((len(input_list),len(input_list[0][8])))
         for counter, sublist in enumerate(input_list):
-            print(counter,sublist)
             for itemnumber in range(len(sublist)):
                 if itemnumber == 0:
                     accuracy_flat.append(sublist[itemnumber])
@@ -69,8 +68,8 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                     mean_predicted_value_flat.append(sublist[itemnumber])
                 elif itemnumber == 15:
                     counter_features_selected_flat.append(sublist[itemnumber])
-                elif itemnumber == 15:
-                    feature_importances_count_flat[counter,:] = (sublist[itemnumber])
+                elif itemnumber == 16:
+                    feature_importances_count_flat[counter,:] = sublist[itemnumber]
                 
 
         accuracy_min = min(accuracy_flat)
@@ -185,14 +184,16 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importances.png')
         plt.savefig(img_safepath)
 
-        importances = feature_importances_count_sum.reshape((feature_importances_count_sum.shape[1],))
-        indices = np.argsort(importances)[::-1]
+        importance_counts = feature_importances_count_sum.reshape((feature_importances_count_sum.shape[1],))
+        print(importance_counts)
+        indices = np.argsort(importance_counts)[::-1]
         feature_names = list(X_train.columns)
         names = [feature_names[i] for i in indices]
         plt.figure(figsize=(20,15))
         plt.title("Feature Counts")
-        plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
+        plt.bar(range(X_train.shape[1])[:20], importance_counts[indices][:20])
         plt.xticks(range(20), names, rotation=90)
+        plt.ylim(0, 100)
         img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_counts.png')
         plt.savefig(img_safepath)
 
@@ -267,7 +268,6 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
 
     elif ml_options["model_architecture"] == "NN":
         for counter, sublist in enumerate(input_list):
-            print(counter,sublist)
             for itemnumber in range(len(sublist)):
                 if itemnumber == 0:
                     accuracy_flat.append(sublist[itemnumber])
