@@ -49,5 +49,5 @@ def prepare_data(numrun, ml_options, X_train, X_test, y_train, y_test):
     X_test.to_csv(full_path_X_test, sep=";", encoding="utf-8", header=True)
     X_train.to_csv(full_path_X_train, sep=";", encoding="utf-8", header=True)
 
-
+    print(X_train_scaled.shape)
     return X_train_scaled, X_test_scaled, y_train, y_test
