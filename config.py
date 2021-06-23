@@ -7,7 +7,8 @@ TIMESTR = time.strftime("%Y%m%d%H%M")
 
 START_TIME = time.time()
 STANDARDPATH = os.environ.get("PSY_PATH")
-DATAPATH_IN = os.environ.get("DATA_PATH") + "prepared_data.csv"
+DATAPATH =  os.environ.get("DATA_PATH")
+DATAPATH_IN = os.path.join(DATAPATH,"prepared_data.csv")
 DATAPATH_OUT = os.path.join(STANDARDPATH, "data", "processed")
 DATAPATH_INTERIM = os.path.join(STANDARDPATH, "data", "interim")
 MODEL_PATH = os.path.join(STANDARDPATH,"model")
@@ -70,9 +71,9 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_change"
 
-ml_options["include_early_change"] = 3 # or module 1,3,4
+ml_options["include_early_change"] = 0 # or module 1,3,4
 
-ml_options["include_costa_sewip"] = 1 # or module 1,3,4
+ml_options["include_costa_sewip"] = 0 # or module 1,3,4
 
 ml_options['test_size_option'] = 0.2
 
@@ -110,7 +111,7 @@ ml_options['dummy_encoding'] = 1
 
 "Model Tuning"
 
-ml_options['feature_selection_option'] = 4 
+ml_options['feature_selection_option'] = 5 
 
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
@@ -122,7 +123,7 @@ if ml_options['feature_selection_option'] == 5:
 
 ml_options['hyperparameter_tuning_option'] = 1
 
-ml_options['n_iter_hyper_randsearch'] = 10 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
+ml_options['n_iter_hyper_randsearch'] = 100 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting
 
 "Postprocessing"
