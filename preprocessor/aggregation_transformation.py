@@ -92,9 +92,8 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data["eurohis_sum"] = data[eurohis_columns].sum(axis=1)
 
             imet_columns = ['PRE_imet1','PRE_imet2','PRE_imet3','PRE_imet4','PRE_imet5','PRE_imet6','PRE_imet7',
-                        'PRE_imet8','PRE_imet9','PRE_imet10']
+                        'PRE_imet8','PRE_imet9']
             data[imet_columns] = data[imet_columns].apply(pd.to_numeric, errors='coerce')
-            data['PRE_imet10'] = data['PRE_imet10'].map({0:10, 1:9, 2:8, 3:7, 4:6, 5:5, 6:4, 7:3, 8:2, 9:1, 10:0})
             data["imet_sum"] = data[imet_columns].sum(axis=1)
 
             gad_columns= ['PRE_gad1','PRE_gad2','PRE_gad3','PRE_gad4','PRE_gad5','PRE_gad6','PRE_gad7']

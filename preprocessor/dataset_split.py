@@ -44,13 +44,23 @@ def prepare_data(ml_options, numrun, features=None):
     """
     "Create RCI variable
     """
-    features[target_id] = features["outcome_sum_pre"] - features["outcome_sum_post"]
-    features[target_id] = features[target_id].apply(lambda x:0 if x >= 5 else 1)
-    features.drop("outcome_sum_post", axis=1, inplace=True)
+    if ml_options["target_id"] == "phq_change": 
+        features[target_id] = features["outcome_sum_pre"] - features["outcome_sum_post"]
+        features[target_id] = features[target_id].apply(lambda x:0 if x >= 5 else 1)
+        features.drop("outcome_sum_post", axis=1, inplace=True)
         
-    labels = features[ml_options["target_id"]]
-    features.drop(ml_options["target_id"],axis=1, inplace=True)
+        labels = features[target_id]
+        features.drop(target_id,axis=1, inplace=True)
+    
+    elif ml_options["target_id"] == "phq_percent":
+        features["percent"] = (features["outcome_sum_post"]/features["outcome_sum_pre"])*100
+        features[target_id] = np.where((((features['percent'] <50) & (features["outcome_sum_post"] <= 9)) | ((features["outcome_sum_pre"] >= 5) \
+                        & (features["outcome_sum_post"] <= 4))),0,1)
+        features.drop(["outcome_sum_post", "percent"], axis=1, inplace=True)
 
+        labels = features[target_id]
+        features.drop(target_id,axis=1, inplace=True)
+        
 
     if ml_options["sampling"] in (0,4,5,6):
         if ml_options['stratify_option'] == 0:
