@@ -33,7 +33,7 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
                'PRE_neurol','PRE_selfhelp','PRE_counsel','PRE_therapy','PRE_med','PRE_hospital',
                'PRE_hos_other', 'PRE_eurohis1','PRE_eurohis2','PRE_eurohis3','PRE_eurohis4','PRE_eurohis5',
                'PRE_eurohis6','PRE_eurohis7','PRE_eurohis8', 'TI_score','TI_MDE','TI_dyst','TI_MDE_x',
-               'TI_MDE_vr','TI_MDE_tr','TI_medik','TI_rekrut','PRE_gad1',
+               'TI_MDE_vr','TI_MDE_tr','TI_medik','PRE_gad1',
                'PRE_gad2','PRE_gad3','PRE_gad4','PRE_gad5','PRE_gad6','PRE_gad7', 'PRE_costa1', 'PRE_costa2', 'PRE_costa3',
               'PRE_costa4', 'PRE_costa5', 'PRE_costa6', 'PRE_costa7', 'PRE_costa8', 'PRE_costa9', 'PRE_costa10', 'PRE_costa11',
               'PRE_costa12', 'PRE_costa13', 'PRE_costa14', 'PRE_costa15', 'PRE_costa16', 'PRE_costa17', 'PRE_costa18',

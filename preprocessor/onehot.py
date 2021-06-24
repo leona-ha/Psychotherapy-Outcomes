@@ -25,8 +25,9 @@ def prepare_data(ml_options, features=None):
     features["age"] = features["registration_dt"].dt.year - features['PRE_birth']
     features.drop(["registration_dt",  "PRE_birth"], axis=1, inplace= True)
 
-    if ml_options["dummy_encoding"] == 1:
-        encoders_list = ["TI_rekrut", "PRE_work", "PRE_household", "PRE_residence", "PRE_relation", 'PRE_sickleave',"registration", "coach"]
+    if ml_options["categorical_encoding"] == 1:
+        encoders_list = ["PRE_work", "PRE_household", "PRE_residence", "PRE_relation", 'PRE_sickleave',"registration", "coach"] #"TI_rekrut", 
         features = pd.get_dummies(features, columns=encoders_list)
+   
     
     return features
