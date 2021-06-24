@@ -110,11 +110,11 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
     elif ml_options['hyperparameter_tuning_option'] == 1:
         random_parameter = ml_options['hyperparameter_dict']
 
-        clf_hyper_tuning = RandomForestClassifier(random_state=ml_options["seed"])
+        clf_hyper_tuning = RandomForestClassifier(random_state=ml_options["seed"],n_jobs=8)
 
         random_hyper_tuning = RandomizedSearchCV(estimator = clf_hyper_tuning, param_distributions = random_parameter,
                                 n_iter = ml_options['n_iter_hyper_randsearch'], cv = ml_options['cvs_hyper_randsearch'],
-                                verbose=0, random_state=ml_options["seed"], scoring="recall", n_jobs=4)
+                                verbose=0, random_state=ml_options["seed"], scoring="recall", n_jobs=8)
         random_hyper_tuning.fit(X_train, y_train)
         best_parameter = random_hyper_tuning.best_params_
     
@@ -191,7 +191,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
         clf = RandomForestClassifier(n_estimators= best_parameter["n_estimators"], criterion = best_parameter["criterion"],
             max_features= best_parameter["max_features"], max_depth= best_parameter["max_depth"],
             min_samples_split= best_parameter["min_samples_split"], min_samples_leaf= best_parameter["min_samples_leaf"],
-         oob_score=True, random_state=ml_options["seed"])
+         oob_score=True, random_state=ml_options["seed"], n_jobs=8)
 
     elif ml_options['sampling']  == 4:
         clf = RandomForestClassifier(n_estimators= best_parameter["n_estimators"], criterion = best_parameter["criterion"],
