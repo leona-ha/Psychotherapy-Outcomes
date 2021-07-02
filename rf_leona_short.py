@@ -87,7 +87,7 @@ ml_options['missing_values_option'] = int(input("""Chose how to deal with NA:
 
 ml_options['data_scaling_option'] = int(input("""Would you like to scale your data?:
                                     \n- 0: Scaling
-                                    \n- 1: Centering and Standardisation"""
+                                    \n- 1: Centering and Standardisation"""))
 
 ml_options['feature_selection_option'] = int(input("""Choose feature selection strategy:
                                     \n- 0: no feature selection
