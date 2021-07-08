@@ -69,11 +69,11 @@ ml_options["target_columns_post"] =  ['POST_phqD1','POST_phqD2','POST_phqD3','PO
 ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phqD4','PRE_phqD5','PRE_phqD6','PRE_phqD7',
                'PRE_phqD8','PRE_phqD9']
 
-ml_options["target_id"] = "phq_percent"
+ml_options["target_id"] = "phq_change"
 
-ml_options["include_early_change"] = 0 # or module 1,3,4
+ml_options["include_early_change"] = 3 # or module 1,3,4
 
-ml_options["include_costa_sewip"] = 0 # or module 1,3,4
+ml_options["include_costa_sewip"] = 1 # or module 1,3,4
 
 ml_options['test_size_option'] = 0.2
 
