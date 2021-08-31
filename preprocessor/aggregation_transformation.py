@@ -19,10 +19,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             "Aggregate and transform questionnaire features
             """
 
-
-            diagnose_cols = ['TI_MDE','TI_dyst','TI_MDE_vr','TI_MDE_tr']
-            data["n_diagnoses"] = data[diagnose_cols].sum(axis=1)
-
             pre_bdi_columns = ['PRE_bdi1','PRE_bdi2','PRE_bdi3',
                     'PRE_bdi4','PRE_bdi5','PRE_bdi6','PRE_bdi7','PRE_bdi8','PRE_bdi9','PRE_bdi10','PRE_bdi11','PRE_bdi12',
                     'PRE_bdi13','PRE_bdi14','PRE_bdi15','PRE_bdi16','PRE_bdi17','PRE_bdi18','PRE_bdi19','PRE_bdi20',
@@ -36,11 +32,11 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                 early_phq_columns = [f'M{ec}_phqD1',f'M{ec}_phqD2',f'M{ec}_phqD3',f'M{ec}_phqD4',f'M{ec}_phqD5',f'M{ec}_phqD6',f'M{ec}_phqD7',f'M{ec}_phqD8',f'M{ec}_phqD9']
                 data[early_phq_columns] = data[early_phq_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
                 data["phq_early_sum"] = data[early_phq_columns].sum(axis=1)
-                data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
-                data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
-               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
-               'M4_phqD7','M4_phqD8','M4_phqD9'], axis=1, inplace=True)
-                data.drop("phq_early_sum", axis=1, inplace=True)
+                #data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
+                #data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
+               #'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
+               #'M4_phqD7','M4_phqD8','M4_phqD9'], axis=1, inplace=True)
+                #data.drop("phq_early_sum", axis=1, inplace=True)
 
                 if ml_options["include_costa_sewip"] ==1:
                     M3_sewip_cols = ['M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
@@ -92,7 +88,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data["eurohis_sum"] = data[eurohis_columns].sum(axis=1)
 
             imet_columns = ['PRE_imet1','PRE_imet2','PRE_imet3','PRE_imet4','PRE_imet5','PRE_imet6','PRE_imet7',
-                        'PRE_imet8','PRE_imet9']
+                        'PRE_imet8','PRE_imet10']
             data[imet_columns] = data[imet_columns].apply(pd.to_numeric, errors='coerce')
             data["imet_sum"] = data[imet_columns].sum(axis=1)
 

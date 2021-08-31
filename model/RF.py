@@ -89,7 +89,7 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
             X_test = sfm.transform(X_test)
 
         else:
-            print('Please change data scaling option to perform Elstic Net‚')
+            print('Please change data scaling option to perform Elastic Net‚')
             sys.exit("Execution therefore stopped")
 
     """

@@ -7,6 +7,8 @@ Dictionary_Affective_norms.txt
 *.csv
 *.png
 *.ipynb
+*.pyc
 rf_leona_short.py
 prepare_run_eval.py
+rf_leona_short.py
 __pycache__/
