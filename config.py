@@ -61,7 +61,7 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
                 'M3_costa10','M3_costa11','M3_costa12','M3_costa13','M3_costa14','M3_costa15',
                 'M3_costa18', 'M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
                     'M3_sewip9','M3_sewip10','M3_sewip11','M3_sewip12','M3_sewip13','M3_sewip14','M3_sewip15','M3_sewip16','M3_sewip17',
-                    'M3_sewip18','M3_sewip19','M3_sewip20','M3_sewip21'] #"TI_rekrut", 
+                    'M3_sewip18','M3_sewip19','M3_sewip20','M3_sewip21'] 
 
 
 ml_options["target_columns_post"] =  ['POST_phqD1','POST_phqD2','POST_phqD3','POST_phqD4','POST_phqD5','POST_phqD6','POST_phqD7','POST_phqD8','POST_phqD9']
@@ -74,6 +74,8 @@ ml_options["target_id"] = "phq_percent"
 ml_options["include_early_change"] = 0 # or module 1,3,4
 
 ml_options["include_costa_sewip"] = 0 # or module 1,3,4
+
+ml_options["include_coach"] = 1 # or 0
 
 ml_options['test_size_option'] = 0.2
 

@@ -1,6 +1,34 @@
 import pandas as pd
 from config import DATAPATH_IN
 from . import coach_dicts
+from collections import Counter
+
+def cumulatively_categorise(column,threshold=0.80):
+    threshold_value=int(threshold*len(column))
+    #Initialise an empty list for our new minimised categories
+    categories_list=[]
+    #Initialise a variable to calculate the sum of frequencies
+    s=0
+    #Create a counter dictionary of the form unique_value: frequency
+    counts=Counter(column)
+
+    #Loop through the category name and its corresponding frequency after sorting the categories by descending order of frequency
+    for i,j in counts.most_common():
+        #Add the frequency to the global sum
+        s+=dict(counts)[i]
+        #Append the category name to the list
+        categories_list.append(i)
+        #Check if the global sum has reached the threshold value, if so break the loop
+        if s>=threshold_value:
+            break
+        #Append the category Other to the list
+    categories_list.append('Other')
+
+    #Replace all instances not in our new categories by Other  
+    new_column=column.apply(lambda x: x if x in categories_list else 'Other')
+
+    return new_column
+
 
 def prepare_data(ml_options, features=None):
 
@@ -11,12 +39,15 @@ def prepare_data(ml_options, features=None):
         features = features[ml_options["feature_columns"]]
     
     coach_dict = coach_dicts.coach_dict
-    anonym_dict = coach_dicts.anonym_dict
     features["coach_gender"] = features["coach"]
     features.replace({"coach_gender": coach_dict}, inplace=True)
-    features.replace({"coach": anonym_dict}, inplace=True)
 
-    features["coach"] = features["coach"]
+    if ml_options["include_coach"] == 1:
+        transformed_column = cumulatively_categorise(features['coach'])
+        features['coach'] = transformed_column
+    
+    elif ml_options["include_coach"] == 0:
+        features.drop(["coach"], axis=1, inplace=True)
 
     features['studyVariant'] = pd.get_dummies(features['studyVariant'])
 
