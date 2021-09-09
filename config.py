@@ -41,10 +41,10 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
             'PRE_eurohis1','PRE_eurohis2','PRE_eurohis3','PRE_eurohis4','PRE_eurohis5',
                'PRE_eurohis6','PRE_eurohis7','PRE_eurohis8', 'TI_score','TI_MDE','TI_dyst',
                'TI_MDE_vr','TI_MDE_tr','TI_medik','PRE_gad1',
-               'PRE_gad2','PRE_gad3','PRE_gad4','PRE_gad5','PRE_gad6','PRE_gad7', 'PRE_costa1', 'PRE_costa2', 'PRE_costa3',
-              'PRE_costa4', 'PRE_costa5', 'PRE_costa6', 'PRE_costa7', 'PRE_costa8', 'PRE_costa9', 'PRE_costa10', 'PRE_costa11',
-              'PRE_costa12', 'PRE_costa13', 'PRE_costa14', 'PRE_costa15', 'PRE_costa16', 'PRE_costa17', 'PRE_costa18',
-              'PRE_costa19', 'PRE_costa20', 'PRE_costa21', 'PRE_pathev1', 'PRE_pathev2', 'PRE_pathev3', 'PRE_pathev4',
+               'PRE_gad2','PRE_gad3','PRE_gad4','PRE_gad5','PRE_gad6','PRE_gad7', 'PRE_costa1', 'PRE_costa2',
+              'PRE_costa5', 'PRE_costa6', 'PRE_costa8', 'PRE_costa10', 'PRE_costa11',
+              'PRE_costa12', 'PRE_costa13', 'PRE_costa14', 'PRE_costa15', 'PRE_costa18',
+             'PRE_pathev1', 'PRE_pathev2', 'PRE_pathev3', 'PRE_pathev4',
               'PRE_pathev5', 'PRE_pathev6', 'PRE_pathev7', 'PRE_pathev8', 'PRE_pathev9', 'PRE_pathev10', 
               'PRE_ipqr1','PRE_ipqr2','PRE_ipqr3','PRE_ipqr4','PRE_ipqr5',
                'PRE_ipqr6','PRE_ipqr7','PRE_ipqr8','PRE_ipqr9','PRE_ipqr10','PRE_ipqr11','PRE_ipqr12','PRE_ipqr13',
@@ -56,8 +56,7 @@ ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1
                'PRE_pvq15','PRE_pvq16','PRE_pvq17','PRE_pvq18','PRE_pvq19','PRE_pvq20','PRE_pvq21', 'PRE_imet1','PRE_imet2','PRE_imet3','PRE_imet4','PRE_imet5','PRE_imet6','PRE_imet7',
                 'PRE_imet8','PRE_imet10', 'M1_phqD1','M1_phqD2','M1_phqD3','M1_phqD4','M1_phqD5','M1_phqD6',
                'M1_phqD7','M1_phqD8','M1_phqD9', 'M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
-               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
-               'M4_phqD7','M4_phqD8','M4_phqD9', 'M3_costa1','M3_costa2','M3_costa5','M3_costa6','M3_costa8',
+               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M3_costa1','M3_costa2','M3_costa5','M3_costa6','M3_costa8',
                 'M3_costa10','M3_costa11','M3_costa12','M3_costa13','M3_costa14','M3_costa15',
                 'M3_costa18', 'M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
                     'M3_sewip9','M3_sewip10','M3_sewip11','M3_sewip12','M3_sewip13','M3_sewip14','M3_sewip15','M3_sewip16','M3_sewip17',
@@ -71,11 +70,11 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_percent"
 
-ml_options["include_early_change"] = 0 # or module 1,3,4
+ml_options["include_early_change"] = 3 # or module 1,3,4
 
-ml_options["include_costa_sewip"] = 0 # or module 1,3,4
+ml_options["include_costa_sewip"] = 1 # or 1
 
-ml_options["include_coach"] = 1 # or 0
+ml_options["include_coach"] = 0 # or 0
 
 ml_options['test_size_option'] = 0.2
 

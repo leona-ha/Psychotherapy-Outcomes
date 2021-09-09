@@ -66,8 +66,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
 
             elif ml_options["include_early_change"] == 0:
                 data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
-               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
-               'M4_phqD7','M4_phqD8','M4_phqD9', 
+               'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 
                'M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
                     'M3_sewip9','M3_sewip10','M3_sewip11','M3_sewip12','M3_sewip13','M3_sewip14','M3_sewip15','M3_sewip16','M3_sewip17',
                     'M3_sewip18','M3_sewip19','M3_sewip20','M3_sewip21',
