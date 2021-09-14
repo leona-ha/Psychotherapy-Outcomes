@@ -42,12 +42,20 @@ def prepare_data(ml_options, numrun, features=None):
             
 
     """
-    "Create RCI variable
+    "Create outcome variable
     """
     if ml_options["target_id"] == "phq_change": 
         features[target_id] = features["outcome_sum_pre"] - features["outcome_sum_post"]
         features[target_id] = features[target_id].apply(lambda x:0 if x >= 5 else 1)
         features.drop("outcome_sum_post", axis=1, inplace=True)
+        
+        labels = features[target_id]
+        features.drop(target_id,axis=1, inplace=True)
+    
+    elif ml_options["target_id"] == "phq_relclin_change": 
+        features["change"] = features["outcome_sum_pre"] - features["outcome_sum_post"]
+        features[target_id] = np.where(((features['change'] >= 5) & (features["outcome_sum_post"] <= 9)),0,1)
+        features.drop(["outcome_sum_post", "change"], axis=1, inplace=True)
         
         labels = features[target_id]
         features.drop(target_id,axis=1, inplace=True)
