@@ -26,8 +26,8 @@ ml_options = {}
 ml_options["model_architecture"] = "RF"
 ml_options["model_name"] = ml_options["model_architecture"] + "_" + TIMESTR
 ml_options["n_iterations"] = int(input("Choose number of iterations:"))
-ml_options["seed"] = random.sample(range(1,100),1)[0]
-ml_options["feature_columns"] = ['registration','studyVariant','coach','PRE_bdi1','PRE_bdi2', # adjusted to cover only variables in both datasets
+#ml_options["seed"] = random.sample(range(1,100),1)[0]
+ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_bdi2', # adjusted to cover only variables in both datasets
                'PRE_bdi3','PRE_bdi4','PRE_bdi5','PRE_bdi6','PRE_bdi7','PRE_bdi8','PRE_bdi9','PRE_bdi10',
                'PRE_bdi11','PRE_bdi12','PRE_bdi13','PRE_bdi14','PRE_bdi15','PRE_bdi16','PRE_bdi17','PRE_bdi18',
                'PRE_bdi19','PRE_bdi20','PRE_bdi21','POST_phqD1','POST_phqD2','POST_phqD3','POST_phqD4','POST_phqD5',
@@ -68,13 +68,13 @@ ml_options["target_columns_post"] =  ['POST_phqD1','POST_phqD2','POST_phqD3','PO
 ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phqD4','PRE_phqD5','PRE_phqD6','PRE_phqD7',
                'PRE_phqD8','PRE_phqD9']
 
-ml_options["target_id"] = "phq_percent"
+ml_options["target_id"] = "phq_relclin_change"
 
-ml_options["include_early_change"] = 3 # or module 1,3,4
+ml_options["include_early_change"] = 0 # or module 1,3,4
 
-ml_options["include_costa_sewip"] = 1 # or 1
+ml_options["include_costa_sewip"] = 0 # 0 or 1
 
-ml_options["include_coach"] = 0 # or 0
+#ml_options["include_coach"] = 0 # 0 or 1
 
 ml_options['test_size_option'] = 0.2
 
