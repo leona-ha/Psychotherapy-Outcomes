@@ -177,6 +177,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         indices = np.argsort(importances)[::-1]
         feature_names = list(X_train.columns)
         names = [feature_names[i] for i in indices]
+        names = names[:20]
         plt.figure(figsize=(20,15))
         plt.title("Feature Importance")
         plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
@@ -185,10 +186,10 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         plt.savefig(img_safepath)
 
         importance_counts = feature_importances_count_sum.reshape((feature_importances_count_sum.shape[1],))
-        print(importance_counts)
         indices = np.argsort(importance_counts)[::-1]
         feature_names = list(X_train.columns)
         names = [feature_names[i] for i in indices]
+        names = names[:20]
         plt.figure(figsize=(20,15))
         plt.title("Feature Counts")
         plt.bar(range(X_train.shape[1])[:20], importance_counts[indices][:20])
@@ -316,18 +317,10 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         number_rounds = len(accuracy_flat)
 
         if not os.path.exists(savepath):
-            header = ['model', 'n_iterations', 'accuracy_min', 'accuracy_max', 'accuracy_mean', 'accuracy_std', 'accuracy_class0_min', \
-                'accuracy_class0_max', 'accuracy_class0_mean', 'accuracy_class0_std', 'accuracy_class1_min','accuracy_class1_max', \
-                'accuracy_class1_mean', 'accuracy_class1_std', 'precision_min', 'precision_max', 'precision_mean', 'precision_std', \
-                    'f1_score_min', 'f1_score_max', 'f1_score_mean', 'f1_score_std','balanced_accuracy_min', 'balanced_accuracy_max', \
-                    'balanced_accuracy_mean', 'balanced_accuracy_std', 'log_loss_value_min', 'log_loss_value_max',\
-                    'log_loss_value_mean', 'log_loss_value_std']
-
-        
-        with open(savepath, 'a', encoding='UTF8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
+            with open(savepath, 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(header)
+                writer.writerow([ml_options["model_name"],number_rounds, accuracy_min, accuracy_max, accuracy_mean, accuracy_std, accuracy_class0_min, \
                 accuracy_class0_max, accuracy_class0_mean, accuracy_class0_std, accuracy_class1_min, accuracy_class1_max, accuracy_class1_mean, \
                     accuracy_class1_std, precision_min, precision_max,precision_mean, precision_std, \
                     f1_score_min, f1_score_max, f1_score_mean, f1_score_std, balanced_accuracy_min, balanced_accuracy_max, balanced_accuracy_mean, 

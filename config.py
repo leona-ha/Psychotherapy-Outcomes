@@ -13,10 +13,13 @@ DATAPATH_OUT = os.path.join(STANDARDPATH, "data", "processed")
 DATAPATH_INTERIM = os.path.join(STANDARDPATH, "data", "interim")
 MODEL_PATH = os.path.join(STANDARDPATH,"model")
 OUTCOME_PATH = os.path.join(STANDARDPATH,"outcomes")
+ROUND_PATH = os.path.join(OUTCOME_PATH, "models")
 
 if not os.path.exists(OUTCOME_PATH):
     os.makedirs(OUTCOME_PATH)
-
+if not os.path.exists(ROUND_PATH):
+    os.makedirs(ROUND_PATH)
+    
 """ Create dictionary with parameters and options """
 
 ml_options = {}
@@ -27,7 +30,7 @@ ml_options["model_architecture"] = "RF"
 ml_options["model_name"] = ml_options["model_architecture"] + "_" + TIMESTR
 ml_options["n_iterations"] = int(input("Choose number of iterations:"))
 #ml_options["seed"] = random.sample(range(1,100),1)[0]
-ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_bdi2', # adjusted to cover only variables in both datasets
+ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_bdi2', 
                'PRE_bdi3','PRE_bdi4','PRE_bdi5','PRE_bdi6','PRE_bdi7','PRE_bdi8','PRE_bdi9','PRE_bdi10',
                'PRE_bdi11','PRE_bdi12','PRE_bdi13','PRE_bdi14','PRE_bdi15','PRE_bdi16','PRE_bdi17','PRE_bdi18',
                'PRE_bdi19','PRE_bdi20','PRE_bdi21','POST_phqD1','POST_phqD2','POST_phqD3','POST_phqD4','POST_phqD5',
@@ -54,8 +57,7 @@ ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_b
                'PRE_gpse7','PRE_gpse8','PRE_gpse9','PRE_gpse10','PRE_pvq1','PRE_pvq2','PRE_pvq3','PRE_pvq4','PRE_pvq5',
                'PRE_pvq6','PRE_pvq7','PRE_pvq8','PRE_pvq9','PRE_pvq10','PRE_pvq11','PRE_pvq12','PRE_pvq13','PRE_pvq14',
                'PRE_pvq15','PRE_pvq16','PRE_pvq17','PRE_pvq18','PRE_pvq19','PRE_pvq20','PRE_pvq21', 'PRE_imet1','PRE_imet2','PRE_imet3','PRE_imet4','PRE_imet5','PRE_imet6','PRE_imet7',
-                'PRE_imet8','PRE_imet10', 'M1_phqD1','M1_phqD2','M1_phqD3','M1_phqD4','M1_phqD5','M1_phqD6',
-               'M1_phqD7','M1_phqD8','M1_phqD9', 'M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
+                'PRE_imet8','PRE_imet10', 'M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
                'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M3_costa1','M3_costa2','M3_costa5','M3_costa6','M3_costa8',
                 'M3_costa10','M3_costa11','M3_costa12','M3_costa13','M3_costa14','M3_costa15',
                 'M3_costa18', 'M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
@@ -112,7 +114,7 @@ ml_options['categorical_encoding'] = 1
 
 "Model Tuning"
 
-ml_options['feature_selection_option'] = 5 
+ml_options['feature_selection_option'] = 0 
 
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
@@ -122,7 +124,7 @@ if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 1
+ml_options['hyperparameter_tuning_option'] = 0
 
 ml_options['n_iter_hyper_randsearch'] = 100 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting

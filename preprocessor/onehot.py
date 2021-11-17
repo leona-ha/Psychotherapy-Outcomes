@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from config import DATAPATH_IN
 from . import coach_dicts
 from collections import Counter
@@ -54,6 +55,9 @@ def prepare_data(ml_options, features=None):
     features["registration"] = features["registration_dt"].dt.year
 
     features["age"] = features["registration_dt"].dt.year - features['PRE_birth']
+
+    features["corona_train"] = np.where((features["registration_dt"] >= pd.Timestamp(2020, 1, 15)),1,0)
+
     features.drop(["registration_dt",  "PRE_birth"], axis=1, inplace= True)
 
     features["PRE_residence"].replace(5,4)
