@@ -30,7 +30,7 @@ ml_options["model_architecture"] = "RF"
 ml_options["model_name"] = ml_options["model_architecture"] + "_" + TIMESTR
 ml_options["n_iterations"] = int(input("Choose number of iterations:"))
 #ml_options["seed"] = random.sample(range(1,100),1)[0]
-ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_bdi2', 
+ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_bdi2', # adjusted to cover only variables in both datasets
                'PRE_bdi3','PRE_bdi4','PRE_bdi5','PRE_bdi6','PRE_bdi7','PRE_bdi8','PRE_bdi9','PRE_bdi10',
                'PRE_bdi11','PRE_bdi12','PRE_bdi13','PRE_bdi14','PRE_bdi15','PRE_bdi16','PRE_bdi17','PRE_bdi18',
                'PRE_bdi19','PRE_bdi20','PRE_bdi21','POST_phqD1','POST_phqD2','POST_phqD3','POST_phqD4','POST_phqD5',
