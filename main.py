@@ -43,7 +43,7 @@ from sklearn.decomposition import PCA, FastICA
 
 import config
 from config import ml_options
-from config import STANDARDPATH, DATAPATH_IN, DATAPATH_OUT
+from config import STANDARDPATH, OUTCOME_PATH, ROUND_PATH
 
 model = ml_options["model_architecture"]
 baseline = ml_options["baseline_model"]
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
         clf = clf_mod.build_model(ml_options, X_train, X_test, y_train, y_test)
         clf = clf_mod.fit_model(X_train, y_train, clf)
-        outcome_results = clf_mod.predict(X_test, y_test, clf, ml_options)
+        outcome_results = clf_mod.predict(X_train,X_test, y_test, clf, ml_options)
         
         outcome_list.append(outcome_results)
 
@@ -85,7 +85,8 @@ if __name__ == '__main__':
             base = import_module(f"model.{baseline}")
             outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
             baseline_list.append(outcome_baseline)
-
+        
+        
     model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train, X_test)
     if ml_options["baseline"] == 1:
         compare_models.run(ml_options, baseline_list, X_train, X_test, model_flatlists)

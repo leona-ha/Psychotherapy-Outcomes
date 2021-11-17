@@ -11,7 +11,9 @@ import copy
 
 def prepare_data(ml_options, X_train, X_test, y_train, y_test):
 
-    dflist = [X_train, X_test]
+    X_train_cp = X_train.copy()
+    X_test_cp = X_test.copy()
+    dflist = [X_train_cp, X_test_cp]
 
     for data in dflist:
         
@@ -158,5 +160,9 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data["bmi_score"] = data['PRE_weight']/ (data['PRE_height']*data['PRE_height']) 
             data.drop(['PRE_weight', 'PRE_height'], axis=1, inplace=True)
 
+            
 
+
+    X_train = X_train_cp
+    X_test = X_test_cp
     return X_train, X_test, y_train, y_test

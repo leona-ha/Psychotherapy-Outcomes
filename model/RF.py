@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import os
 import csv   
-from config import MODEL_PATH, STANDARDPATH, OUTCOME_PATH
+from config import MODEL_PATH, ROUND_PATH
 import pickle
 #from hpo import get_acc_status, obj_fnc
 from . import hpo
@@ -219,7 +219,7 @@ def fit_model(X_train, y_train, clf):
     clf = clf.fit(X_train, y_train)
     return clf
 
-def predict(X_test, y_test, clf, ml_options):
+def predict(X_train, X_test, y_test, clf, ml_options):
     y_prediction = np.zeros((len(y_test), 3))
     y_prediction[:,0] = clf.predict(X_test)
     y_prediction[:,1] = y_test[:]
@@ -260,6 +260,7 @@ def predict(X_test, y_test, clf, ml_options):
     if ml_options['feature_selection_option'] == 0:
         feature_importances = clf.feature_importances_
         counter_features_selected = X_train.shape[1]
+        feature_importances_count = np.ones((len(clf.feature_importances_)))
         
 
     elif ml_options['feature_selection_option'] == 1:
@@ -316,7 +317,7 @@ def predict(X_test, y_test, clf, ml_options):
   #  print('Round Number: ', str(ml_options["seed"]), '\nSelected Features: ', str(counter_features_selected),'\nAccuracy: ', str(accuracy), '\nAccuracy_class0: ', str(accuracy_class1), '\nAccuracy_class1/Recall: ', 
      #   str(accuracy_class0), '\nPrecision: ', str(precision), '\nF1_Score: ', str(f1_score), '\nOOB Accuracy ', str(oob_accuracy), '\nLog Loss value: ', str(log_loss_value))
 
-    savepath = os.path.join(STANDARDPATH, 'outcomes_rf.csv')
+    savepath = os.path.join(ROUND_PATH, ml_options['model_name'])
     if not os.path.exists(savepath):
         header = ['model', 'seed/run', 'n_features_selected', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'oob_accuracy', 'log_loss_value', 'roc_auc']
         with open(savepath, 'w', encoding='UTF8', newline='') as f:
