@@ -52,5 +52,20 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     f1_score = 2 * ((accuracy_class1 * precision)/(accuracy_class1+precision))
     #log_loss_value = log_loss(y_test, clf.predict_proba(X_test), normalize=True)
     outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc]
+
+    savepath = os.path.join(ROUND_PATH, ml_options['model_name'], "_baseline")
+    if not os.path.exists(savepath):
+        header = ['model', 'seed/run', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'roc_auc']
+        with open(savepath, 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            # write the header
+            writer.writerow(header)
+            # write outcome rows
+            writer.writerow([ml_options["baseline_model"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, roc_auc])
+    else:
+        with open(savepath, 'a', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([ml_options["baseline_model"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc])
+ 
     
     return outcome_list

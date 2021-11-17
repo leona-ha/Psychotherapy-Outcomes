@@ -18,28 +18,11 @@ from importlib import import_module
 from tqdm import tqdm
 
 # Data handling and plotting
-import numpy as np
-import pandas as pd
 import math
-from scipy import stats
-
 from preprocessor import main_preprocessing, aggregation_transformation, dataset_split, scaling, onehot
 from postprocessor import safe_results, compare_models
 from model import RF, NN, SVM
 
-# Model preparation and selection
-from sklearn import preprocessing
-from sklearn import set_config
-from sklearn.utils import shuffle, resample
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import RandomizedSearchCV, ParameterSampler
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression, BayesianRidge
-from sklearn.linear_model import SGDClassifier
-from sklearn.feature_selection import RFE, RFECV, SelectFromModel
-from sklearn.feature_selection import VarianceThreshold
-from sklearn.metrics import log_loss, roc_curve, auc
-from sklearn.decomposition import PCA, FastICA
 
 import config
 from config import ml_options
