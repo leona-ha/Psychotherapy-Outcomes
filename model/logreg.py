@@ -3,6 +3,10 @@ import numpy as np
 from sklearn.metrics import log_loss, roc_curve, auc
 from sklearn.calibration import calibration_curve
 
+import os
+import csv
+from config import STANDARDPATH, ROUND_PATH
+
 def run(ml_options, X_train,X_test, y_train,y_test):
 
     X_train = X_train[["outcome_sum_pre"]]
@@ -53,7 +57,7 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     #log_loss_value = log_loss(y_test, clf.predict_proba(X_test), normalize=True)
     outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc]
 
-    savepath = os.path.join(ROUND_PATH, ml_options['model_name'], "_baseline")
+    savepath = os.path.join(ROUND_PATH, ml_options['model_name'] + "_baseline")
     if not os.path.exists(savepath):
         header = ['model', 'seed/run', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'roc_auc']
         with open(savepath, 'w', encoding='UTF8', newline='') as f:

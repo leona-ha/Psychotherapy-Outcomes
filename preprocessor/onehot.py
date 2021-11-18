@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from config import DATAPATH_IN
-from . import coach_dicts
 from collections import Counter
 
 def cumulatively_categorise(column,threshold=0.80):
