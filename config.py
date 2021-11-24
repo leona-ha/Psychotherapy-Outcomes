@@ -72,9 +72,9 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_relclin_change"
 
-ml_options["include_early_change"] = 0 # or module 1,3,4
+ml_options["include_early_change"] = 3 # or module 1,3,4
 
-ml_options["include_costa_sewip"] = 0 # 0 or 1
+ml_options["include_costa_sewip"] = 1 # 0 or 1
 
 #ml_options["include_coach"] = 0 # 0 or 1
 
@@ -114,7 +114,7 @@ ml_options['categorical_encoding'] = 1
 
 "Model Tuning"
 
-ml_options['feature_selection_option'] = 0 
+ml_options['feature_selection_option'] = 5 
 
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))

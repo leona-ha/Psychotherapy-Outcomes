@@ -34,7 +34,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                 early_phq_columns = [f'M{ec}_phqD1',f'M{ec}_phqD2',f'M{ec}_phqD3',f'M{ec}_phqD4',f'M{ec}_phqD5',f'M{ec}_phqD6',f'M{ec}_phqD7',f'M{ec}_phqD8',f'M{ec}_phqD9']
                 data[early_phq_columns] = data[early_phq_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
                 data["phq_early_sum"] = data[early_phq_columns].sum(axis=1)
-                #data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
+                data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
                 #data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
                #'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
                #'M4_phqD7','M4_phqD8','M4_phqD9'], axis=1, inplace=True)
