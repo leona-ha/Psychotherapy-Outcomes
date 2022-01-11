@@ -319,17 +319,17 @@ def predict(X_train, X_test, y_test, clf, ml_options):
 
     savepath = os.path.join(ROUND_PATH, ml_options['model_name'])
     if not os.path.exists(savepath):
-        header = ['model', 'seed/run', 'n_features_selected', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'oob_accuracy', 'log_loss_value', 'roc_auc', 'fpr', 'tpr']
+        header = ['model', 'seed/run', 'n_features_selected', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'oob_accuracy', 'log_loss_value', 'roc_auc', 'fpr', 'tpr', 'tprs']
         with open(savepath, 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             # write the header
             writer.writerow(header)
             # write outcome rows
-            writer.writerow([ml_options["model_name"],ml_options["seed"], counter_features_selected, accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, oob_accuracy, log_loss_value, roc_auc, fpr, tpr])
+            writer.writerow([ml_options["model_name"],ml_options["seed"], counter_features_selected, accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, oob_accuracy, log_loss_value, roc_auc, fpr, tpr, tprs])
     else:
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([ml_options["model_name"],ml_options["seed"], counter_features_selected,accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, oob_accuracy, log_loss_value, roc_auc, fpr, tpr])
+            writer.writerow([ml_options["model_name"],ml_options["seed"], counter_features_selected,accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, oob_accuracy, log_loss_value, roc_auc, fpr, tpr, tprs])
 
     outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy,oob_accuracy, log_loss_value, feature_importances, fpr, tpr, tprs, roc_auc, fraction_positives, mean_predicted_value, counter_features_selected, feature_importances_count]
     return outcome_list
