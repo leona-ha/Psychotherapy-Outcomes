@@ -313,6 +313,8 @@ def predict(X_train, X_test, y_test, clf, ml_options):
     tprs = np.interp(mean_fpr, fpr, tpr)
     roc_auc = auc(fpr, tpr)
     fraction_positives, mean_predicted_value = calibration_curve(y_test, clf.predict_proba(X_test)[:,1], n_bins=10)
+    fpr = fpr.tolist()
+    tpr = tpr.tolist()
     
   #  print('Round Number: ', str(ml_options["seed"]), '\nSelected Features: ', str(counter_features_selected),'\nAccuracy: ', str(accuracy), '\nAccuracy_class0: ', str(accuracy_class1), '\nAccuracy_class1/Recall: ', 
      #   str(accuracy_class0), '\nPrecision: ', str(precision), '\nF1_Score: ', str(f1_score), '\nOOB Accuracy ', str(oob_accuracy), '\nLog Loss value: ', str(log_loss_value))

@@ -45,9 +45,8 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     tprs = np.interp(mean_fpr, fpr, tpr)
     roc_auc = auc(fpr, tpr)
     fraction_positives, mean_predicted_value = calibration_curve(y_test, log_model.predict_proba(X_test)[:,1], n_bins=10)
-    fpr = fpr.tolist()
-    tpr = tpr.tolist()
     
+
 
     """ Calculate accuracy scores """
 

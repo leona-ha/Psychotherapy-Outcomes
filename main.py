@@ -16,6 +16,10 @@ from pathlib import Path
 import json
 from importlib import import_module
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+sns.set()
 
 # Data handling and plotting
 import math
@@ -27,6 +31,8 @@ from model import RF, NN, SVM
 import config
 from config import ml_options
 from config import STANDARDPATH, OUTCOME_PATH, ROUND_PATH
+
+IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
 
 model = ml_options["model_architecture"]
 baseline = ml_options["baseline_model"]
@@ -49,6 +55,8 @@ if __name__ == '__main__':
     outcome_list = []
     baseline_list = []
     
+    fig = plt.figure(figsize=(15,8))
+
     for numrun in tqdm(runslist, total=ml_options["n_iterations"]):
         features = onehot.prepare_data(ml_options)
         X_train, X_test, y_train, y_test = dataset_split.prepare_data(ml_options, numrun, features)
@@ -64,10 +72,39 @@ if __name__ == '__main__':
         
         outcome_list.append(outcome_results)
 
+        
+        fpr = outcome_results[9]
+        tpr = outcome_results[10]
+        roc_auc = outcome_results[12]
+
+        print("fpr:",fpr)
+        print("tpr:",tpr)
+        print("auc:",roc_auc)
+
+    
+        plt.plot(fpr, tpr)
+        #plt.plot(fpr, tpr, label="{}, AUC={:.3f}".format(roc_auc))
+
+
+
         if ml_options["baseline"] == 1:
             base = import_module(f"model.{baseline}")
             outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
             baseline_list.append(outcome_baseline)
+        
+    plt.plot([0,1], [0,1], color='orange', linestyle='--')
+
+    plt.xticks(np.arange(0.0, 1.1, step=0.1))
+    plt.xlabel("False Positive Rate", fontsize=15)
+
+    plt.yticks(np.arange(0.0, 1.1, step=0.1))
+    plt.ylabel("True Positive Rate", fontsize=15)
+
+    plt.title('ROC Curve Analysis', fontweight='bold', fontsize=15)
+    plt.legend(prop={'size':13}, loc='lower right')
+
+    img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_roc_curves.png')
+    plt.savefig(img_safepath)
         
         
     model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train, X_test)
