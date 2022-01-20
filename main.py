@@ -55,7 +55,7 @@ if __name__ == '__main__':
     outcome_list = []
     baseline_list = []
     
-    fig = plt.figure(figsize=(15,8))
+    fig = plt.figure(figsize=(15,10))
 
     for numrun in tqdm(runslist, total=ml_options["n_iterations"]):
         features = onehot.prepare_data(ml_options)
