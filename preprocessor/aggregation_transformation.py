@@ -138,6 +138,9 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                     data[M3_sewip_cols] = data[M3_sewip_cols].apply(pd.to_numeric, errors='coerce').astype('Int64')
                     data[M3_costa_cols] = data[M3_costa_cols].apply(pd.to_numeric, errors='coerce').astype('Int64')
 
+                    for column in M3_sewip_cols:
+                        data[column] = data[column].map({1:0,2:1, 3:2, 4:3, 5:4})
+
                     data["M3_costa_sum"] = data[M3_costa_cols].sum(axis=1).astype('Int64')
                     data["M3_sewip_sum"] = data[M3_sewip_cols].sum(axis=1).astype('Int64')
 

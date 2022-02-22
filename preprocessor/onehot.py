@@ -59,12 +59,6 @@ def prepare_data(ml_options, features=None):
 
     features.drop(["registration_dt",  "PRE_birth"], axis=1, inplace= True)
 
-    features["PRE_residence"].replace(5,4)
-    features["PRE_household"].replace(3,4)
-    features["PRE_work"].replace(3,4)
-    features["PRE_work"].replace(5,6)
-    features["PRE_work"].replace(1,7)
-    features["PRE_relation"].replace(3,0)
 
     if ml_options["categorical_encoding"] == 1:
         #if ml_options["include_coach"] == 1:

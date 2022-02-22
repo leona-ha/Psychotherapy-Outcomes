@@ -39,6 +39,22 @@ def build_model(ml_options, X_train,X_test, y_train,y_test):
 
     """
     "Feature Selection
+    Best practise for Training Random Forests:
+
+    Factor out linear relationships between predictor and response (strong linear relationships often overpowers subtler effects) --> change target variable (ggf. anderes Outcome). Andere Idee: erstmal linear Regression, dann Random Forest on Residuals
+    wichtig: R^2 can be misleading, when comparing models with linear components vs. nonlinear
+    Feature Engineering is key:
+    use domain knowledge as a guide
+    explicitly define interaction effects as new predictors (wenn man bereits davon ausgeht, dass es welche gibt)
+    use multiple metrics that are proxies for the same concept as predictors (leads to better performance, can help make the model less vulnerable to outliers)
+    Best Practices for Interpreting Random Forests:
+    Check that feature importances align with expectations/intuition
+    confirm which features are actually adding predictive value
+    if features expected to be important are not --> data or model issues
+    Check directional relationship between top predictors and response
+    Manually step through 4-5 levels of a few trees to detect patterns
+    "Stress Test" the model with syn thetic data, that varies the value of one predictor while holding the others equal
+    Visualize Random Forests with scikit-learn
     """
 
     y_train=np.ravel(y_train) # flattens y train
