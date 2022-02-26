@@ -1,6 +1,5 @@
 
 from config import STANDARDPATH, DATAPATH_IN, DATAPATH_OUT
-from sklearn.model_selection import train_test_split
 import json
 import os
 import pandas as pd
@@ -27,9 +26,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                     'PRE_bdi21']
             data[pre_bdi_columns] = data[pre_bdi_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["PRE_bdi_sum"] = data[pre_bdi_columns].sum(axis=1).astype('Int64')
-
-
-        
 
             phq_s_columns = ['PRE_phqS1','PRE_phqS2','PRE_phqS3','PRE_phqS4','PRE_phqS5','PRE_phqS6','PRE_phqS7',
                     'PRE_phqS8','PRE_phqS9', 'PRE_phqS10']
@@ -121,10 +117,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                 data[early_phq_columns] = data[early_phq_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
                 data["phq_early_sum"] = data[early_phq_columns].sum(axis=1)
                 data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
-                #data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
-               #'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 'M4_phqD1','M4_phqD2','M4_phqD3','M4_phqD4','M4_phqD5','M4_phqD6',
-               #'M4_phqD7','M4_phqD8','M4_phqD9'], axis=1, inplace=True)
-                #data.drop("phq_early_sum", axis=1, inplace=True)
 
                 if ml_options["include_costa_sewip"] ==1:
                     M3_sewip_cols = ['M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
@@ -145,7 +137,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                     data["M3_sewip_sum"] = data[M3_sewip_cols].sum(axis=1).astype('Int64')
 
                     data["costa_early_change"] = data["M3_costa_sum"] - data["costa_sum"]
-                    #data["sewip_early_change"] = data["M3_sewip_sum"] - data["sewip_sum"]
 
                     ##data["sewip_emo"] = data[['M3_sewip1', 'M3_sewip8', 'M3_sewip15']].sum(axis=1).astype('Int64')
                     #data["sewip_prob"] = data[['M3_sewip2', 'M3_sewip9', 'M3_sewip16']].sum(axis=1).astype('Int64')

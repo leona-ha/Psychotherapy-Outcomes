@@ -38,18 +38,6 @@ def prepare_data(ml_options, features=None):
         features = pd.read_csv(DATAPATH_IN, sep=";", low_memory=False)
         features = features[ml_options["feature_columns"]]
     
-    #coach_dict = coach_dicts.coach_dict
-    #features["coach_gender"] = features["coach"]
-    #features.replace({"coach_gender": coach_dict}, inplace=True)
-
-    #if ml_options["include_coach"] == 1:
-    #    transformed_column = cumulatively_categorise(features['coach'])
-    #    features['coach'] = transformed_column
-    
-    #elif ml_options["include_coach"] == 0:
-    #    features.drop(["coach"], axis=1, inplace=True)
-
-
     features["registration_dt"] = pd.to_datetime(features["registration"])
     features["registration"] = features["registration_dt"].dt.year
 
@@ -61,8 +49,7 @@ def prepare_data(ml_options, features=None):
 
 
     if ml_options["categorical_encoding"] == 1:
-        #if ml_options["include_coach"] == 1:
-         #   encoders_list = ["PRE_work", "PRE_household", "PRE_residence", "PRE_relation", 'PRE_sickleave',"registration",'studyVariant', "coach"] 
+        
         encoders_list = ["PRE_work", "PRE_household", "PRE_residence", "PRE_relation", 'PRE_sickleave',"registration", 'studyVariant'] 
 
         features = pd.get_dummies(features, columns=encoders_list)
