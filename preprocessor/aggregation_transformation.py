@@ -1,11 +1,7 @@
-
 from config import STANDARDPATH, DATAPATH_IN, DATAPATH_OUT
-import json
 import os
 import pandas as pd
 import numpy as np
-from pathlib import Path
-import csv
 import copy
 
 def prepare_data(ml_options, X_train, X_test, y_train, y_test):
@@ -19,7 +15,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             """
             "Aggregate and transform questionnaire features
             """
-
+        # BDI
             pre_bdi_columns = ['PRE_bdi1','PRE_bdi2','PRE_bdi3',
                     'PRE_bdi4','PRE_bdi5','PRE_bdi6','PRE_bdi7','PRE_bdi8','PRE_bdi9','PRE_bdi10','PRE_bdi11','PRE_bdi12',
                     'PRE_bdi13','PRE_bdi14','PRE_bdi15','PRE_bdi16','PRE_bdi17','PRE_bdi18','PRE_bdi19','PRE_bdi20',
@@ -27,33 +23,39 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data[pre_bdi_columns] = data[pre_bdi_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["PRE_bdi_sum"] = data[pre_bdi_columns].sum(axis=1).astype('Int64')
 
+        # PHQ-S
             phq_s_columns = ['PRE_phqS1','PRE_phqS2','PRE_phqS3','PRE_phqS4','PRE_phqS5','PRE_phqS6','PRE_phqS7',
                     'PRE_phqS8','PRE_phqS9', 'PRE_phqS10']
 
             data[phq_s_columns] = data[phq_s_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["phq_s_sum"] = data[phq_s_columns].sum(axis=1)
-            
+
+        # EUROHIS
             eurohis_columns = ['PRE_eurohis1','PRE_eurohis2','PRE_eurohis3','PRE_eurohis4','PRE_eurohis5','PRE_eurohis6',
                         'PRE_eurohis7','PRE_eurohis8']
             data[eurohis_columns] = data[eurohis_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["eurohis_sum"] = data[eurohis_columns].sum(axis=1)
 
+        # IMET
             imet_columns = ['PRE_imet1','PRE_imet2','PRE_imet3','PRE_imet4','PRE_imet5','PRE_imet6','PRE_imet7',
                         'PRE_imet8','PRE_imet10']
             data[imet_columns] = data[imet_columns].apply(pd.to_numeric, errors='coerce')
             data["imet_sum"] = data[imet_columns].sum(axis=1)
-
+        
+        # GAD
             gad_columns= ['PRE_gad1','PRE_gad2','PRE_gad3','PRE_gad4','PRE_gad5','PRE_gad6','PRE_gad7']
             data[gad_columns] = data[gad_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["gad_sum"] = data[gad_columns].sum(axis=1)
-
+        
+        # COSTA
             costa_columns = ['PRE_costa1', 'PRE_costa2', 'PRE_costa5', 'PRE_costa6',
                         'PRE_costa8', 'PRE_costa10', 'PRE_costa11','PRE_costa12', 'PRE_costa13', 'PRE_costa14',
                         'PRE_costa15', 'PRE_costa18']
             
             data[costa_columns] = data[costa_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["costa_sum"] = data[costa_columns].sum(axis=1).astype('Int64')
-
+        
+        # PATHEV
             pathev_columns = ['PRE_pathev1', 'PRE_pathev2', 'PRE_pathev3', 'PRE_pathev4','PRE_pathev5', 'PRE_pathev6', 
                         'PRE_pathev7', 'PRE_pathev8', 'PRE_pathev9', 'PRE_pathev10']
             data[pathev_columns] = data[pathev_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
@@ -65,8 +67,8 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data["pathev_zuv"] = data[['PRE_pathev1','PRE_pathev4', 'PRE_pathev5', 'PRE_pathev9']].sum(axis=1).astype('Int64')
             data["pathev_fur"] = data[['PRE_pathev3', 'PRE_pathev7']].sum(axis=1).astype('Int64')
             data["pathev_pas"] = data[['PRE_pathev2', 'PRE_pathev6', 'PRE_pathev8', 'PRE_pathev10']].sum(axis=1).astype('Int64')
-
-
+        
+        #IPQR
             ipqr_columns = ['PRE_ipqr1','PRE_ipqr2','PRE_ipqr3','PRE_ipqr4','PRE_ipqr5',
                     'PRE_ipqr6','PRE_ipqr7','PRE_ipqr8','PRE_ipqr9','PRE_ipqr10','PRE_ipqr11','PRE_ipqr12','PRE_ipqr13',
                     'PRE_ipqr14','PRE_ipqr15','PRE_ipqr16','PRE_ipqr17','PRE_ipqr18']
@@ -84,32 +86,48 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data["ipqr_illcoher"] = data[['PRE_ipqr10','PRE_ipqr11','PRE_ipqr12']].sum(axis=1).astype('Int64')
             data["ipqr_timecycl"] = data[['PRE_ipqr13','PRE_ipqr14','PRE_ipqr15']].sum(axis=1).astype('Int64')
             data["ipqr_emotrep"] = data[['PRE_ipqr16','PRE_ipqr17','PRE_ipqr18']].sum(axis=1).astype('Int64')
-
-
+        
+        #GPSE
             gpse_columns = ['PRE_gpse1','PRE_gpse2','PRE_gpse3','PRE_gpse4','PRE_gpse5','PRE_gpse6',
                     'PRE_gpse7','PRE_gpse8','PRE_gpse9','PRE_gpse10']
             
             data[gpse_columns] = data[gpse_columns].apply(pd.to_numeric, errors='coerce')
             data["gpse_sum"] = data[gpse_columns].sum(axis=1).astype('Int64')
-
+        
+        #BSSS
             bsss_columns = ['PRE_bsss1','PRE_bsss2','PRE_bsss3','PRE_bsss4','PRE_bsss5','PRE_bsss6','PRE_bsss7','PRE_bsss8',
                         'PRE_bsss9','PRE_bsss10','PRE_bsss11','PRE_bsss12','PRE_bsss13']
             data[bsss_columns] = data[bsss_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
             data["bsss_perceived"] = data[['PRE_bsss1','PRE_bsss2','PRE_bsss3','PRE_bsss4','PRE_bsss5','PRE_bsss6','PRE_bsss7',
                                 'PRE_bsss8']].sum(axis=1).astype('Int64')
             data["bsss_suppseek"] = data[['PRE_bsss9','PRE_bsss10','PRE_bsss11','PRE_bsss12','PRE_bsss13']].sum(axis=1).astype('Int64')
-
+        
+        #PVQ
             pvq_columns = ['PRE_pvq1','PRE_pvq2','PRE_pvq3','PRE_pvq4','PRE_pvq5','PRE_pvq6','PRE_pvq7','PRE_pvq8','PRE_pvq9',
                     'PRE_pvq10','PRE_pvq11','PRE_pvq12','PRE_pvq13','PRE_pvq14','PRE_pvq15','PRE_pvq16','PRE_pvq17',
                     'PRE_pvq18','PRE_pvq19','PRE_pvq20','PRE_pvq21']
                     
             data[pvq_columns] = data[pvq_columns].apply(pd.to_numeric, errors ='coerce').astype('Int64')
-
-
+        
+        #BMI
             data['PRE_height'] = data['PRE_height']/100
             data["bmi_score"] = data['PRE_weight']/ (data['PRE_height']*data['PRE_height']) 
             data.drop(['PRE_weight', 'PRE_height'], axis=1, inplace=True)
+
+        # recoding of categorical features with too few numbers
+        #  -------------------------------------------------------------------------
+
+            data["PRE_residence"].replace(5,4, inplace=True) # Gehöft/Alleinstehendes Haus --> Dorf
+            data["PRE_household"].replace(3,4, inplace=True) # nur mit Kindern --> mit anderen Personen
+            data["PRE_work"].replace(3,4, inplace=True) # Student --> Schüler/Auszubildend
+            data["PRE_work"].replace(5,6, inplace=True) # Rentner --> Derzeit arbeitslos
+            data["PRE_work"].replace(1,7, inplace=True) # Selbstständig --> Sonstige
+            data["PRE_relation"].replace(3,0, inplace=True) # Verwitwet --> Ledig
+            data["PRE_education"].replace(0,1, inplace=True) # 
+
         
+        # include early treatment variables
+        #  -------------------------------------------------------------------------
 
             if ml_options["include_early_change"] in (1,2,3):
                 ec = ml_options["include_early_change"]
@@ -138,15 +156,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
 
                     data["costa_early_change"] = data["M3_costa_sum"] - data["costa_sum"]
 
-                    ##data["sewip_emo"] = data[['M3_sewip1', 'M3_sewip8', 'M3_sewip15']].sum(axis=1).astype('Int64')
-                    #data["sewip_prob"] = data[['M3_sewip2', 'M3_sewip9', 'M3_sewip16']].sum(axis=1).astype('Int64')
-                    #data["sewip_res"] = data[['M3_sewip3', 'M3_sewip10', 'M3_sewip17']].sum(axis=1).astype('Int64')
-                    #data["sewip_mean"] = data[['M3_sewip4', 'M3_sewip11', 'M3_sewip18']].sum(axis=1).astype('Int64')
-                    #data["sewip_collab"] = data[['M3_sewip5', 'M3_sewip6', 'M3_sewip12', 'M3_sewip13', 'M3_sewip19', 'M3_sewip20']].sum(axis=1).astype('Int64')
-                    #data["sewip_mast"] = data[['M3_sewip7', 'M3_sewip14', 'M3_sewip21']].sum(axis=1).astype('Int64')
-
-                    #data.drop(M3_sewip_cols, axis=1, inplace=True)
-
 
 
             elif ml_options["include_early_change"] == 0:
@@ -160,7 +169,6 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                     'M3_costa18'], axis=1, inplace=True)
 
             
-
 
     X_train = X_train_cp
     X_test = X_test_cp

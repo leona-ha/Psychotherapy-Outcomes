@@ -5,16 +5,13 @@ Created on Sat Jan 16 2021
 @author: hammelrathl, hilbertk
 """
 # System  and path configurations
-import copy
-import sys
+
 import os
-import multiprocessing
-import time
-import pickle
-import csv
-from pathlib import Path
-import json
+import config
+from config import ml_options
+from config import STANDARDPATH, OUTCOME_PATH, ROUND_PATH
 from importlib import import_module
+import csv
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,14 +23,9 @@ sns.set()
 
 # Data handling and plotting
 import math
-from preprocessor import main_preprocessing, aggregation_transformation, dataset_split, scaling, onehot
+from preprocessor import missing_values, aggregation_transformation, dataset_split, scaling, onehot
 from postprocessor import safe_results, compare_models
 from model import RF, NN, SVM
-
-
-import config
-from config import ml_options
-from config import STANDARDPATH, OUTCOME_PATH, ROUND_PATH
 
 IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
 
@@ -63,7 +55,7 @@ if __name__ == '__main__':
     for numrun in tqdm(runslist, total=ml_options["n_iterations"]):
         features = onehot.prepare_data(ml_options)
         X_train, X_test, y_train, y_test = dataset_split.prepare_data(ml_options, numrun, features)
-        X_train, X_test, y_train, y_test = main_preprocessing.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
+        X_train, X_test, y_train, y_test = missing_values.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
         X_train, X_test, y_train, y_test = aggregation_transformation.prepare_data(ml_options,X_train, X_test, y_train, y_test)
         X_train, X_test, y_train, y_test = scaling.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
 

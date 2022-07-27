@@ -1,33 +1,6 @@
 import pandas as pd
 import numpy as np
 from config import DATAPATH_IN
-from collections import Counter
-
-def cumulatively_categorise(column,threshold=0.80):
-    threshold_value=int(threshold*len(column))
-    #Initialise an empty list for our new minimised categories
-    categories_list=[]
-    #Initialise a variable to calculate the sum of frequencies
-    s=0
-    #Create a counter dictionary of the form unique_value: frequency
-    counts=Counter(column)
-
-    #Loop through the category name and its corresponding frequency after sorting the categories by descending order of frequency
-    for i,j in counts.most_common():
-        #Add the frequency to the global sum
-        s+=dict(counts)[i]
-        #Append the category name to the list
-        categories_list.append(i)
-        #Check if the global sum has reached the threshold value, if so break the loop
-        if s>=threshold_value:
-            break
-        #Append the category Other to the list
-    categories_list.append('Other')
-
-    #Replace all instances not in our new categories by Other  
-    new_column=column.apply(lambda x: x if x in categories_list else 'Other')
-
-    return new_column
 
 
 def prepare_data(ml_options, features=None):
