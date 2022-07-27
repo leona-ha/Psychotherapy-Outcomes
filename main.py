@@ -19,6 +19,9 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+sns.set_theme(style="darkgrid")
+sns.set(rc={'figure.figsize':(15,8.)})
+sns.set(font_scale=1.5)
 sns.set()
 
 # Data handling and plotting
@@ -95,16 +98,16 @@ if __name__ == '__main__':
     plt.plot([0,1], [0,1], color='orange', linestyle='--')
 
     plt.xticks(np.arange(0.0, 1.1, step=0.1))
-    plt.xlabel("False Positive Rate", fontsize=15)
+    plt.xlabel("False Positive Rate")
 
     plt.yticks(np.arange(0.0, 1.1, step=0.1))
-    plt.ylabel("True Positive Rate", fontsize=15)
+    plt.ylabel("True Positive Rate")
 
     plt.title('ROC Curve Analysis', fontweight='bold', fontsize=15)
     plt.legend(prop={'size':13}, loc='lower right')
 
     img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_roc_curves.png')
-    plt.savefig(img_safepath)
+    plt.savefig(img_safepath, dpi=300)
         
         
     model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train, X_test)

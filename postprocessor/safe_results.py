@@ -183,7 +183,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         plt.bar(range(X_train.shape[1])[:20], importances[indices][:20])
         plt.xticks(range(20), names, rotation=90)
         img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importances.png')
-        plt.savefig(img_safepath)
+        plt.savefig(img_safepath, dpi=300)
 
         importance_counts = feature_importances_count_sum.reshape((feature_importances_count_sum.shape[1],))
         indices = np.argsort(importance_counts)[::-1]
@@ -196,7 +196,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         plt.xticks(range(20), names, rotation=90)
         plt.ylim(0, 100)
         img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_counts.png')
-        plt.savefig(img_safepath)
+        plt.savefig(img_safepath, dpi=300)
 
 ### Add input list!!
 
@@ -264,7 +264,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         feature_names = list(X_train.columns)
         feature_names = np.array(feature_names)
         plt.xticks(np.arange(1 + 2 * 10), feature_names[top_coefficients], rotation=45, ha='right')
-        plt.savefig(f'{ml_options["model_name"]}_feature_importances.png')
+        plt.savefig(f'{ml_options["model_name"]}_feature_importances.png', dpi=300)
     
 
     elif ml_options["model_architecture"] == "NN":
