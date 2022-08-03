@@ -113,17 +113,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
             data['PRE_height'] = data['PRE_height']/100
             data["bmi_score"] = data['PRE_weight']/ (data['PRE_height']*data['PRE_height']) 
             data.drop(['PRE_weight', 'PRE_height'], axis=1, inplace=True)
-
-        # recoding of categorical features with too few numbers
-        #  -------------------------------------------------------------------------
-
-            data["PRE_residence"].replace(5,4, inplace=True) # Gehöft/Alleinstehendes Haus --> Dorf
-            data["PRE_household"].replace(3,4, inplace=True) # nur mit Kindern --> mit anderen Personen
-            data["PRE_work"].replace(3,4, inplace=True) # Student --> Schüler/Auszubildend
-            data["PRE_work"].replace(5,6, inplace=True) # Rentner --> Derzeit arbeitslos
-            data["PRE_work"].replace(1,7, inplace=True) # Selbstständig --> Sonstige
-            data["PRE_relation"].replace(3,0, inplace=True) # Verwitwet --> Ledig
-            data["PRE_education"].replace(0,1, inplace=True) # 
+ 
 
         
         # include early treatment variables

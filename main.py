@@ -9,23 +9,27 @@ Created on Sat Jan 16 2021
 import os
 import config
 from config import ml_options
-from config import STANDARDPATH, OUTCOME_PATH, ROUND_PATH
+from config import STANDARDPATH, OUTCOME_PATH, ROUND_PATH, DATAPATH_IN
 from importlib import import_module
 import csv
 from tqdm import tqdm
-import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-sns.set_theme(style="darkgrid")
-sns.set(rc={'figure.figsize':(15,8.)})
-sns.set(font_scale=1.5)
-sns.set()
 
 # Data handling and plotting
 import math
+import numpy as np
+import pandas as pd
 from preprocessor import missing_values, aggregation_transformation, dataset_split, scaling, onehot
 from postprocessor import safe_results, compare_models
 from model import RF, NN, SVM
+
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.style.use(matplotlib.get_data_path()+'/stylelib/apa.mplstyle') # selecting the style sheet
+#import seaborn as sns
+#sns.set_theme(style="darkgrid")
+##sns.set(rc={'figure.figsize':(15,8.)})
+#sns.set(font_scale=1.5)
+#sns.set()
 
 IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
 
@@ -46,15 +50,18 @@ def reminder():
 if __name__ == '__main__':
     reminder()
     runslist = [i for i in range(ml_options["n_iterations"])]
-    
+
+    #features_in = pd.read_csv(DATAPATH_IN, sep=";", low_memory=False)
+    #features_in = features_in[ml_options["feature_columns"]]
+
     outcome_list = []
     baseline_list = []
     
-    fig = plt.figure(figsize=(15,10))
+    fig = plt.figure(figsize=(6.4,4.8))
 
     for numrun in tqdm(runslist, total=ml_options["n_iterations"]):
-        features = onehot.prepare_data(ml_options)
-        X_train, X_test, y_train, y_test = dataset_split.prepare_data(ml_options, numrun, features)
+        features_out = onehot.prepare_data(ml_options)
+        X_train, X_test, y_train, y_test = dataset_split.prepare_data(ml_options, numrun, features_out)
         X_train, X_test, y_train, y_test = missing_values.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
         X_train, X_test, y_train, y_test = aggregation_transformation.prepare_data(ml_options,X_train, X_test, y_train, y_test)
         X_train, X_test, y_train, y_test = scaling.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
@@ -79,6 +86,9 @@ if __name__ == '__main__':
     
         plt.plot(fpr, tpr)
         #plt.plot(fpr, tpr, label="{}, AUC={:.3f}".format(roc_auc))
+        features_out = None
+        features = None
+
 
 
 
@@ -95,7 +105,7 @@ if __name__ == '__main__':
     plt.yticks(np.arange(0.0, 1.1, step=0.1))
     plt.ylabel("True Positive Rate")
 
-    plt.title('ROC Curve Analysis', fontweight='bold', fontsize=15)
+    plt.title('ROC Curve Analysis')#, fontweight='bold', fontsize=15)
     plt.legend(prop={'size':13}, loc='lower right')
 
     img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_roc_curves.png')
@@ -114,10 +124,9 @@ if __name__ == '__main__':
         header = [*ml_options.keys()]
         with open(savepath, 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
-            # write the header
             writer.writerow(header)
-            # write outcome rows
-            writer.writerow(list(ml_options.values()))
+            writer.writerow(list(ml_options.values()))  # write outcome rows
+
     else:
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)

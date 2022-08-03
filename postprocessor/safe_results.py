@@ -3,6 +3,9 @@ import os
 import numpy as np
 from config import STANDARDPATH, OUTCOME_PATH
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.style.use(matplotlib.get_data_path()+'/stylelib/apa.mplstyle') # selecting the style sheet
 
 IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
 if not os.path.exists(IMG_SAFEPATH):
@@ -258,7 +261,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         top_positive_coefficients = np.argsort(importances)[-10:]
         top_negative_coefficients = np.argsort(importances)[:10]
         top_coefficients = np.hstack([top_negative_coefficients, top_positive_coefficients])
-        plt.figure(figsize=(18, 7))
+        #plt.figure(figsize=(18, 7))
         colors = ['green' if c < 0 else 'blue' for c in importances[top_coefficients]]
         plt.bar(np.arange(2 * 10), importances[top_coefficients], color=colors)
         feature_names = list(X_train.columns)

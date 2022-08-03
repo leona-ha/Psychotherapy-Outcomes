@@ -40,7 +40,7 @@ ml_options["feature_columns"] = ['registration','studyVariant','PRE_bdi1','PRE_b
                'PRE_phqD6','PRE_phqD7','PRE_phqD8','PRE_phqD9', 'PRE_birth','PRE_sex','PRE_education',
                'PRE_work','PRE_household','PRE_relation','PRE_residence','PRE_internet','PRE_height','PRE_weight',
                'PRE_treatment','PRE_support','PRE_kPT','PRE_ill','PRE_sickleave','PRE_doc',
-               'PRE_neurol','PRE_selfhelp','PRE_counsel','PRE_therapy','PRE_med','PRE_hospital',
+               'PRE_neurol','PRE_counsel','PRE_therapy','PRE_med',
             'PRE_eurohis1','PRE_eurohis2','PRE_eurohis3','PRE_eurohis4','PRE_eurohis5',
                'PRE_eurohis6','PRE_eurohis7','PRE_eurohis8', 'TI_score','TI_MDE','TI_dyst',
                'TI_MDE_vr','TI_MDE_tr','TI_medik','PRE_gad1',
@@ -72,11 +72,9 @@ ml_options["target_columns_pre"] = ['PRE_phqD1','PRE_phqD2','PRE_phqD3','PRE_phq
 
 ml_options["target_id"] = "phq_relclin_change"
 
-ml_options["include_early_change"] = 3 # or module 1,3,4
+ml_options["include_early_change"] = 3 # 0 or module 1,3,4
 
 ml_options["include_costa_sewip"] = 1 # 0 or 1
-
-#ml_options["include_coach"] = 0 # 0 or 1
 
 ml_options['test_size_option'] = 0.2
 
@@ -114,7 +112,7 @@ ml_options['categorical_encoding'] = 1
 
 "Model Tuning"
 
-ml_options['feature_selection_option'] = 5 
+ml_options['feature_selection_option'] = 5 # 0 or 5
 
 if ml_options['feature_selection_option'] in (3, 4):
     ml_options['number_features_recursive'] = int(input("Choose max. number of features (default is 10):"))
@@ -124,7 +122,7 @@ if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
-ml_options['hyperparameter_tuning_option'] = 1
+ml_options['hyperparameter_tuning_option'] = 1 # 0 or 1
 
 ml_options['n_iter_hyper_randsearch'] = 100 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
 ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombinationen; Höhere Anzahl weniger Overfitting
@@ -158,22 +156,5 @@ def rf_config(options_dict):
     
     return options_dict
 
-def svm_config(options_dict):
-    options_dict["data_scaling_option"] = 1
-    options_dict['standard_dict'] = {
-                            "C":1.0, 
-                            'penalty':"l2",
-                            "loss":"squared_hinge", 
-                            "random_state":ml_options["seed"],
-                            "tol" : 0.0001,
-                            "max_iter":1000} 
-
-    options_dict['hyperparameter_dict'] = {}
-
-def nn_config(options_dict):
-    ml_options["optimizer"] = "adam"
-    ml_options["loss"]= "binary_crossentropy"
-    ml_options["metrics"]= ['accuracy', 'binary_accuracy', 'Recall', 'Precision']
-    return options_dict
 
 
