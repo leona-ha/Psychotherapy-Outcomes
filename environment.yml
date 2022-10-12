@@ -1,9 +1,0 @@
-dependencies:
- - python=3.5
- - numpy
- - pandas
- - scipy
- - scikit-learn
- - jupyter
- - pathlib
- - imblearn
