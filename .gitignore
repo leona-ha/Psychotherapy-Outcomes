@@ -6,9 +6,11 @@ Dictionary_Affective_norms.txt
 *.pkl
 *.csv
 *.png
+*.eps
 *.ipynb
 *.pyc
 rf_leona_short.py
 prepare_run_eval.py
 rf_leona_short.py
 __pycache__/
+Create_demographics.ipynb

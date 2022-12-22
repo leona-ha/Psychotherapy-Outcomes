@@ -78,17 +78,24 @@ ml_options["include_costa_sewip"] = 0 # 0 or 1
 
 ml_options['test_size_option'] = 0.2
 
+# Choose an option for train/test splits = sampling
+### 0: no balancing
+### 1: sample balancing for train only
+### 2: sample balancing for test only
+### 3: sample balancing for train and test
+### 4: balanced class_weights (RF only)
+### 5: balanced random forest estimator
+### 6: class weighting with custom dict
+
 ml_options['sampling'] = 3
 
 if ml_options['sampling'] == 0:
     ml_options['rf_classes_class_weight'] = dict({1:2, 0:3})
 
+### Would you like to stratify? 
+### 0: no
+### 1: yes)
 ml_options['stratify_option'] = 0
-
-ml_options['nlp_features'] = 0
-if ml_options['nlp_features'] == 1:
-    ml_options["nlp_columns"] == ["letter_M1", "letter_M2"]
-    ml_options["clean_dict"] == "LIWC"
 
 
 "Model Options"
@@ -100,17 +107,35 @@ ml_options["main_metric"] = "recall"
 
 "Data preprocessing"
 
+ ### 0: No Scaling
+ ### 1: Centering and Standardisation
+
 ml_options['data_scaling_option'] = 1
 
 ml_options['scaling_columns'] = ["bmi_score", "age", "PRE_internet"]
 
+### 0: no Imputation/ just leave them
+### 1: delete rows with missing values
+### 2: replace NA with mode/median/most most frequent
+
+
 ml_options['missing_values_option'] = 0
+
+### Would you like to drop missing rows in outcome variable?:
+### 0: No
+### 1: Yes """))  
 
 ml_options['missing_outcome_option'] = 1    
 
 ml_options['categorical_encoding'] = 1
 
 "Model Tuning"
+
+### 0: no feature selection
+### 1: remove features with low variance (< 80%)
+### 3: recursive
+### 4: recursive cross validated
+### 5: Elastic-Net (only with standardized data)
 
 ml_options['feature_selection_option'] = 5 # 0 or 5
 
@@ -122,6 +147,11 @@ if ml_options['feature_selection_option'] == 5:
     ml_options['threshold_option'] = 'mean'
 
 
+### 0: no hyperparameter tuning
+### 1: hyperparameter tuning per scikit-learn RandomizeSearch
+### 2: hyperparameter tuning per oob error
+### 3: hyperparameter tuning per Bayesian optimization (hyperopt)""")) 
+
 ml_options['hyperparameter_tuning_option'] = 1 # 0 or 1
 
 ml_options['n_iter_hyper_randsearch'] = 100 # Anzahl Durchgänge mit zufälligen Hyperparameter - Kombinationen; so hoch wie möglich
@@ -129,17 +159,34 @@ ml_options['cvs_hyper_randsearch'] = 5 # default-cvs bei Hyperparameter - Kombin
 
 "Postprocessing"
 
+### Would you like a permutation test? 
+### 0: no
+### 1: yes
 ml_options['permutation_option'] = 0
 
 if ml_options['permutation_option'] == 1:
     ml_options['n_permutations_option'] = int(input("Choose number of permutations (default is 5000):"))
 
+### Would you like to safe the model? 
+### 0: no
+### 1: yes
+
 ml_options['save_model_option'] = 0
+
+### Would you like to safe the model configurations? 
+### 0: no
+### 1: yes
 
 ml_options['save_config_option'] = 1
 
+### Would you like to safe the train test split? 
+### 0: no
+### 1: yes
 ml_options['save_split_option'] = 0
 
+### Would you like to run a baseline model? 
+### 0: no
+### 1: yes
 ml_options['baseline'] = 1
 ml_options['baseline_model'] = 'logreg'
 
