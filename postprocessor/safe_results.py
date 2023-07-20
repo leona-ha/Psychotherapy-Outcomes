@@ -197,7 +197,9 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
 
         plt.figure(figsize=(6.4, 4.8))
         bar_1 = plt.bar(range(X_train.shape[1])[:10], importances[indices][:10])
-        plt.xticks(range(10),joint_df["names"], rotation=45)
+        #plt.xticks(range(10),joint_df["names"], rotation=45)
+        plt.xticks(range(10),joint_df["names"])
+
         plt.xlim([-1.2, 10])
 
         counts = joint_df["counts"]

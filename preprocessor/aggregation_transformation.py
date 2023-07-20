@@ -149,6 +149,13 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
 
 
             elif ml_options["include_early_change"] == 0:
+                # Calculate phq early change for extended baseline model 
+                ec = ml_options["include_early_change"]
+                early_phq_columns = [f'M{ec}_phqD1',f'M{ec}_phqD2',f'M{ec}_phqD3',f'M{ec}_phqD4',f'M{ec}_phqD5',f'M{ec}_phqD6',f'M{ec}_phqD7',f'M{ec}_phqD8',f'M{ec}_phqD9']
+                data[early_phq_columns] = data[early_phq_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
+                data["phq_early_sum"] = data[early_phq_columns].sum(axis=1)
+                data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]
+
                 data.drop(['M3_phqD1', 'M3_phqD2', 'M3_phqD3', 'M3_phqD4', 'M3_phqD5', 'M3_phqD6',
                'M3_phqD7', 'M3_phqD8', 'M3_phqD9', 
                'M3_sewip1','M3_sewip2','M3_sewip3','M3_sewip4','M3_sewip5','M3_sewip6','M3_sewip7','M3_sewip8',
@@ -156,7 +163,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
                     'M3_sewip18','M3_sewip19','M3_sewip20','M3_sewip21',
                 'M3_costa1','M3_costa2','M3_costa5','M3_costa6','M3_costa8',
                     'M3_costa10','M3_costa11','M3_costa12','M3_costa13','M3_costa14','M3_costa15',
-                    'M3_costa18'], axis=1, inplace=True)
+                    'M3_costa18', 'phq_early_sum'], axis=1, inplace=True)
 
             
 

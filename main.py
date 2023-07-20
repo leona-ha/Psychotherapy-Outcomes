@@ -32,6 +32,8 @@ IMG_SAFEPATH = os.path.join(OUTCOME_PATH, "plots")
 
 model = ml_options["model_architecture"]
 baseline = ml_options["baseline_model"]
+baseline_extra = ml_options["baseline_model_extra"]
+
 
 if model == "RF":
     ml_options = config.rf_config(ml_options)
@@ -53,6 +55,8 @@ if __name__ == '__main__':
 
     outcome_list = []
     baseline_list = []
+    baseline_list_extra = []
+
     
     for numrun in tqdm(runslist, total=ml_options["n_iterations"]):
         features_out = onehot.prepare_data(ml_options)
@@ -61,6 +65,23 @@ if __name__ == '__main__':
         X_train, X_test, y_train, y_test = aggregation_transformation.prepare_data(ml_options,X_train, X_test, y_train, y_test)
         X_train, X_test, y_train, y_test = scaling.prepare_data(numrun, ml_options, X_train,X_test, y_train,y_test)
 
+        # Baseline model
+        if ml_options["baseline"] == 1:
+            base = import_module(f"model.{baseline}")
+            outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
+            baseline_list.append(outcome_baseline)
+        
+        if ml_options["baseline_extra"] == 1:
+            base_extra = import_module(f"model.{baseline_extra}")
+            outcome_baseline_extra = base_extra.run(ml_options, X_train, X_test, y_train, y_test)
+            baseline_list_extra.append(outcome_baseline_extra)
+        
+        # Drop early change variable for baseline models
+        if ml_options["include_early_change"] == 0:
+            X_train.drop("phq_early_change", inplace=True)
+            X_test.drop("phq_early_change", inplace=True)
+
+        # Main model
         clf_mod = import_module(f"model.{model}")
 
         clf = clf_mod.build_model(ml_options, X_train, X_test, y_train, y_test)
@@ -71,17 +92,16 @@ if __name__ == '__main__':
 
 
 # Compare to baseline model
-
-
-        if ml_options["baseline"] == 1:
-            base = import_module(f"model.{baseline}")
-            outcome_baseline = base.run(ml_options, X_train, X_test, y_train, y_test)
-            baseline_list.append(outcome_baseline)
-        
         
     model_flatlists = safe_results.aggregate_metrics(ml_options, outcome_list, X_train, X_test)
     if ml_options["baseline"] == 1:
-        compare_models.run(ml_options, baseline_list, X_train, X_test, model_flatlists)
+        output_name = ml_options["baseline_model"]
+        compare_models.run(ml_options, baseline_list, X_train, X_test, model_flatlists, output_name)
+        
+    if ml_options["baseline_extra"] == 1:
+        output_name = ml_options["baseline_model_extra"]
+        compare_models.run(ml_options, baseline_list_extra, X_train, X_test, model_flatlists, output_name)
+
 
 # ROC curve
 

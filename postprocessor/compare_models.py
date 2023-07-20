@@ -29,7 +29,7 @@ def corrected_dependent_ttest(data1, data2, X_train, X_test, alpha=0.05):
     # return everything
     return t_stat, df, cv, p
 
-def run(ml_options, input_list, X_train, X_test, model_flatlists):
+def run(ml_options, input_list, X_train, X_test, model_flatlists, output_name):
     
     accuracy_flat = []
     accuracy_class1_flat = []
@@ -102,7 +102,7 @@ def run(ml_options, input_list, X_train, X_test, model_flatlists):
     _,_,_,p_roc_auc = corrected_dependent_ttest(model_flatlists[6], roc_auc_flat, X_train, X_test)
        
          
-    savepath = os.path.join(OUTCOME_PATH, 'model_comparison.csv')
+    savepath = os.path.join(OUTCOME_PATH, f'model_comparison_{output_name}.csv')
     number_rounds = len(accuracy_flat)
     if not os.path.exists(savepath):
         header = ['model_to_compare', 'n_iterations','p_accuracy', 'p_accuracy_class0', 'p_accuracy_class1', \

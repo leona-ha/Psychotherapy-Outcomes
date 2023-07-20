@@ -188,8 +188,10 @@ ml_options['save_split_option'] = 0
 ### 0: no
 ### 1: yes
 ml_options['baseline'] = 1
-ml_options['baseline_model'] = 'logreg'
+ml_options['baseline_model'] = 'logreg' # 'logreg_early'
 
+ml_options['baseline_extra'] = 1
+ml_options['baseline_model_extra'] = 'logreg_early ' # 
 
 def rf_config(options_dict):
     options_dict['data_scaling_option'] = 1
