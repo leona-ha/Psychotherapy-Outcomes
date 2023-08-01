@@ -19,8 +19,8 @@ import math
 import numpy as np
 import pandas as pd
 from preprocessor import missing_values, aggregation_transformation, dataset_split, scaling, onehot
-from postprocessor import safe_results, compare_models
-from model import RF, NN, SVM
+from postprocessor import safe_results, compare_models, aggregate_benchmark
+from model import RF
 from sklearn.metrics import roc_curve, auc
 
 import matplotlib.pyplot as plt
@@ -76,11 +76,12 @@ if __name__ == '__main__':
             outcome_baseline_extra = base_extra.run(ml_options, X_train, X_test, y_train, y_test)
             baseline_list_extra.append(outcome_baseline_extra)
         
-        # Drop early change variable for baseline models
+            # Drop early change variable for baseline models
         if ml_options["include_early_change"] == 0:
-            X_train.drop("phq_early_change", inplace=True)
-            X_test.drop("phq_early_change", inplace=True)
-
+            X_train.drop("phq_early_change", axis=1,inplace=True)
+            X_test.drop("phq_early_change", axis=1,inplace=True)
+        print(X_train.columns)
+        
         # Main model
         clf_mod = import_module(f"model.{model}")
 
@@ -101,7 +102,7 @@ if __name__ == '__main__':
     if ml_options["baseline_extra"] == 1:
         output_name = ml_options["baseline_model_extra"]
         compare_models.run(ml_options, baseline_list_extra, X_train, X_test, model_flatlists, output_name)
-
+        baseline_list_agg = aggregate_benchmark.aggregate_metrics(ml_options, baseline_list_extra, X_train, X_test)
 
 # ROC curve
 
@@ -126,10 +127,32 @@ if __name__ == '__main__':
     mean_auc = auc(mean_fpr, mean_tpr)
     std_auc = np.std(roc_auc)
 
+    if ml_options["baseline_extra"] == 1:
+        fpr_ec = baseline_list_agg[1]
+        tpr_ec = baseline_list_agg[2]
+        tprs_ec = baseline_list_agg[3]
+        roc_auc_ec = baseline_list_agg[0]
+        tprs_ec[-1][0] = 0.0
+        mean_fpr_ec = np.linspace(0, 1, 100)
+        mean_tpr_ec = np.mean(tprs_ec, axis=0)
+        mean_tpr_ec[0] = 0
+        mean_tpr_ec[-1] = 1.0
+        mean_auc_ec = auc(mean_fpr_ec, mean_tpr_ec)
+        std_auc_ec = np.std(roc_auc_ec)
+
         
-    plt.plot(mean_fpr, mean_tpr, color='k', label=r'Mean ROC', lw=2) #plus minus: $\pm$
-    plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='w', label='AUC = %0.2f, SD = %0.2f' % (mean_auc, std_auc))
-    plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='k', label='Chance')
+    plt.plot(mean_fpr, mean_tpr, color='k', label=r'Mean ROC RF', lw=2) #plus minus: $\pm$
+    plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='w', label='AUC RF = %0.2f, SD RF = %0.2f' % (mean_auc, std_auc))
+    plt.plot([0, 1], [0, 1], linestyle='--', lw=1, color='k', label='Chance')
+    if ml_options["baseline_extra"] == 1:
+        fpr_ec = baseline_list_agg[1]
+        tpr_ec = baseline_list_agg[2]
+        mean_fpr_ec = np.linspace(0, 1, 100)
+        mean_tpr_ec = np.mean(tprs_ec, axis=0)
+        mean_tpr_ec[0] = 0
+        mean_tpr_ec[-1] = 1.0
+        plt.plot(mean_fpr_ec, mean_tpr_ec, color='k', label=r'Mean ROC Benchmark', lw=2) #plus minus: $\pm$
+        plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='w', label='AUC Benchmark = %0.2f, SD Benchmark = %0.2f' % (mean_auc_ec, std_auc_ec))
 
     plt.legend(prop={'size':9}, loc='lower right')
     plt.xlabel("False Positive Rate")
@@ -144,6 +167,50 @@ if __name__ == '__main__':
 
     plt.savefig(img_safepath_1, dpi=300)
     plt.savefig(img_safepath_2, dpi=1000)
+
+# ROC curve benchmark with early change 
+    fpr_ec = baseline_list_agg[1]
+    tpr_ec = baseline_list_agg[2]
+    roc_auc_ec = baseline_list_agg[0]
+    tprs_ec = baseline_list_agg[3]
+    tprs_ec[-1][0] = 0.0
+
+    fig = plt.figure(figsize=(6.4,4.8))
+
+    for i in range(len(fpr)):
+        if i == 0:
+            plt.plot(fpr_ec[i], tpr_ec[i], lw=1, color = 'grey', label = 'Individual Iterations')
+        else:
+            plt.plot(fpr_ec[i], tpr_ec[i], lw=1, color = 'grey')
+
+    mean_fpr_ec = np.linspace(0, 1, 100)
+    tprs_ec[-1][0] = 0.0
+    mean_tpr_ec = np.mean(tprs_ec, axis=0)
+    mean_tpr_ec[0] = 0
+    mean_tpr_ec[-1] = 1.0
+    mean_auc_ec = auc(mean_fpr_ec, mean_tpr_ec)
+    std_auc_ec = np.std(roc_auc_ec)
+
+        
+    plt.plot(mean_fpr_ec, mean_tpr_ec, color='k', label=r'Mean ROC Benchmark', lw=2) #plus minus: $\pm$
+    plt.plot(mean_fpr, mean_tpr, color='k', label=r'Mean ROC RF Model', lw=2, linestyle='-.') #plus minus: $\pm$
+
+    plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='w', label='AUC = %0.2f, SD = %0.2f' % (mean_auc_ec, std_auc_ec))
+    plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='k', label='Chance')
+
+    plt.legend(prop={'size':9}, loc='lower right')
+    plt.xlabel("False Positive Rate")
+    plt.xlim([-0.005, 1.005])
+
+    plt.ylabel("True Positive Rate")
+    plt.ylim([-0.005, 1.005])
+
+    img_safepath_A = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_ec-benchmark_roc_curves.png')
+    img_safepath_B = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_ec-benchmark_roc_curves_ec-benchmark.eps')
+
+
+    plt.savefig(img_safepath_A, dpi=300)
+    plt.savefig(img_safepath_B, dpi=1000)
 
         
     if ml_options["save_config_option"] == 1:

@@ -5,7 +5,7 @@ import csv
 from config import MODEL_PATH, ROUND_PATH
 import pickle
 #from hpo import get_acc_status, obj_fnc
-from . import hpo
+#from . import hpo
 from hyperopt import hp, tpe, fmin, Trials, STATUS_OK,SparkTrials, space_eval
 from sklearn.preprocessing import scale, normalize
 from sklearn.model_selection import cross_val_score 

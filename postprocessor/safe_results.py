@@ -123,8 +123,6 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
         feature_importances_count_sum = feature_importances_count_flat.sum(axis=0).reshape(1,len(input_list[0][8]))
         
         
-
-        
         number_rounds = len(accuracy_flat)
         if not os.path.exists(savepath):
             header = ['model', 'n_iterations', 'counter_features_selected_mean', 'counter_features_selected_std','counter_features_selected_min','counter_features_selected_max', \
@@ -178,46 +176,7 @@ def aggregate_metrics(ml_options, input_list, X_train=None, X_test=None):
                 '\nMean Precision:' + str(precision_mean)+ '\nMean F1:' + str(f1_score_mean))
 
 
-        importances = feature_importances_mean.reshape((feature_importances_mean.shape[1],))
-        importances_count = feature_importances_count_sum.reshape((feature_importances_count_sum.shape[1],))
-
-        indices = np.argsort(importances)[::-1]
-        indices_count = np.argsort(importances_count)[::-1]
-
-        feature_names = list(X_train.columns)
-        names = [feature_names[i] for i in indices]
-        names_count = [feature_names[i] for i in indices_count]
-        
-
-        imp_df = pd.DataFrame({"importances":importances, "names": names})
-        count_df = pd.DataFrame({"counts":importances_count, "names": names_count})
-        joint_df = imp_df.merge(count_df, on="names")
-        joint_df = joint_df.head(10)
-        print(joint_df.shape)
-
-        plt.figure(figsize=(6.4, 4.8))
-        bar_1 = plt.bar(range(X_train.shape[1])[:10], importances[indices][:10])
-        #plt.xticks(range(10),joint_df["names"], rotation=45)
-        plt.xticks(range(10),joint_df["names"])
-
-        plt.xlim([-1.2, 10])
-
-        counts = joint_df["counts"]
-      
-        for i,rect in enumerate(bar_1):
-            plt.text(rect.get_x() + rect.get_width()/2.0, rect.get_height()+0.0005,f'{counts[i]:.0f}',ha='center', va='bottom', fontdict={"size":9,"fontname":"Arial"})
-
-        img_safepath = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importance.eps')
-        img_safepath_1 = os.path.join(IMG_SAFEPATH, f'{ml_options["model_name"]}_feature_importance.png')
-        data_safepath = os.path.join(DATAPATH_OUT, f'{ml_options["model_name"]}_feature_importance.pkl')
-
-
-        plt.savefig(img_safepath, dpi=300)
-        plt.savefig(img_safepath_1, dpi=300)
-        joint_df.to_pickle(data_safepath)
-
 
     model_flatlists = [accuracy_flat, accuracy_class1_flat, accuracy_class0_flat, precision_flat, f1_score_flat, balanced_accuracy_flat, roc_auc_flat, fpr_flat, tpr_flat, tprs_flat, fraction_positives_flat, mean_predicted_value_flat]
-    
     return model_flatlists
 

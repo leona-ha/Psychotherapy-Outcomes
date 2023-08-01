@@ -150,8 +150,7 @@ def prepare_data(ml_options, X_train, X_test, y_train, y_test):
 
             elif ml_options["include_early_change"] == 0:
                 # Calculate phq early change for extended baseline model 
-                ec = ml_options["include_early_change"]
-                early_phq_columns = [f'M{ec}_phqD1',f'M{ec}_phqD2',f'M{ec}_phqD3',f'M{ec}_phqD4',f'M{ec}_phqD5',f'M{ec}_phqD6',f'M{ec}_phqD7',f'M{ec}_phqD8',f'M{ec}_phqD9']
+                early_phq_columns = [f'M3_phqD1',f'M3_phqD2',f'M3_phqD3',f'M3_phqD4',f'M3_phqD5',f'M3_phqD6',f'M3_phqD7',f'M3_phqD8',f'M3_phqD9']
                 data[early_phq_columns] = data[early_phq_columns].apply(pd.to_numeric, errors='coerce').astype('Int64')
                 data["phq_early_sum"] = data[early_phq_columns].sum(axis=1)
                 data["phq_early_change"] = data["outcome_sum_pre"] - data["phq_early_sum"]

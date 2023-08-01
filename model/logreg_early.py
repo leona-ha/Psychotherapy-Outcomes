@@ -9,8 +9,8 @@ from config import STANDARDPATH, ROUND_PATH
 
 def run(ml_options, X_train,X_test, y_train,y_test):
 
-    X_train = X_train[["outcome_sum_pre"]]
-    X_test = X_test[["outcome_sum_pre"]]
+    X_train = X_train[["phq_early_change"]]
+    X_test = X_test[["phq_early_change"]]
 
     log_model = LogisticRegression(C=1.0)
     log_model.fit(X_train, y_train)   
@@ -45,8 +45,9 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     tprs = np.interp(mean_fpr, fpr, tpr)
     roc_auc = auc(fpr, tpr)
     fraction_positives, mean_predicted_value = calibration_curve(y_test, log_model.predict_proba(X_test)[:,1], n_bins=10)
+    fpr = fpr.tolist()
+    tpr = tpr.tolist()
     
-
 
     """ Calculate accuracy scores """
 
@@ -57,9 +58,9 @@ def run(ml_options, X_train,X_test, y_train,y_test):
     precision = counter_class1_correct / (counter_class1_correct + counter_class0_incorrect)
     f1_score = 2 * ((accuracy_class1 * precision)/(accuracy_class1+precision))
     #log_loss_value = log_loss(y_test, clf.predict_proba(X_test), normalize=True)
-    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc]
+    outcome_list = [accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc, fpr, tpr, tprs]
 
-    savepath = os.path.join(ROUND_PATH, ml_options['model_name'] + "_baseline")
+    savepath = os.path.join(ROUND_PATH, ml_options['model_name'] + "_baseline_early")
     if not os.path.exists(savepath):
         header = ['model', 'seed/run', 'accuracy', 'accuracy_class1/recall', 'accuracy_class0', 'precision', 'f1_score','balanced_accuracy', 'roc_auc']
         with open(savepath, 'w', encoding='UTF8', newline='') as f:
@@ -67,11 +68,11 @@ def run(ml_options, X_train,X_test, y_train,y_test):
             # write the header
             writer.writerow(header)
             # write outcome rows
-            writer.writerow([ml_options["baseline_model"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, roc_auc])
+            writer.writerow([ml_options["baseline_model_extra"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score,balanced_accuracy, roc_auc])
     else:
         with open(savepath, 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([ml_options["baseline_model"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc])
+            writer.writerow([ml_options["baseline_model_extra"],ml_options["seed"], accuracy, accuracy_class1, accuracy_class0, precision, f1_score, balanced_accuracy, roc_auc])
  
     
     return outcome_list
